@@ -1,0 +1,100 @@
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/parent_layout"
+        app:layout_constraintEnd_toEndOf="@id/parent_layout"
+        app:layout_constraintStart_toStartOf="@id/parent_layout"
+        app:layout_constraintTop_toTopOf="@id/parent_layout"
+        android:layout_marginTop="100dp" android:layout_marginStart="0dp" android:layout_marginEnd="0dp"
+        android:layout_marginBottom="20dp" android:id="@+id/main_menu">
+
+    <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/mainMenu_quickGame"
+            android:text="@string/menucategory1"
+            android:onClick="onClick"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:background="@drawable/menu_btn_bg"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="30dp"
+            app:layout_constraintBottom_toTopOf="@+id/mainMenu_play"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/mainMenu_play"
+            android:text="@string/menucategory2"
+            android:onClick="onClick"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:background="@drawable/menu_btn_bg"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="30dp"
+            app:layout_constraintBottom_toTopOf="@+id/mainMenu_instructions"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/mainMenu_instructions"
+            android:text="@string/menucategory5"
+            android:onClick="onClick"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:background="@drawable/menu_btn_bg"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="30dp"
+            app:layout_constraintBottom_toTopOf="@+id/mainMenu_statistics"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/mainMenu_statistics"
+            android:text="@string/menucategory6"
+            android:onClick="onClick"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:background="@drawable/menu_btn_bg"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="30dp"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/mainMenu_playerSettings"
+            android:onClick="onClick"
+            android:textColor="@color/white"
+            android:background="@drawable/menu_btn_bg"
+            android:drawableLeft="@drawable/ic_build"
+            android:padding="3.5dp"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            app:layout_constraintEnd_toStartOf="@+id/mainMenu_statistics"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="30dp"
+            app:layout_constraintBottom_toTopOf="@+id/mainMenu_statistics"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/mainMenu_gameSettings"
+            android:onClick="onClick"
+            android:textColor="@color/white"
+            android:background="@drawable/menu_btn_bg"
+            android:drawableLeft="@drawable/ic_settings"
+            android:padding="3.5dp"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/mainMenu_statistics"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginBottom="30dp"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

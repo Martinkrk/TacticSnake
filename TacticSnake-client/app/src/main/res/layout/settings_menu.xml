@@ -1,0 +1,179 @@
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="0dp"
+        android:layout_height="0dp" xmlns:tools="http://schemas.android.com/tools"
+        app:layout_constraintBottom_toBottomOf="@id/parent_layout"
+        app:layout_constraintEnd_toEndOf="@id/parent_layout"
+        app:layout_constraintStart_toStartOf="@id/parent_layout"
+        app:layout_constraintTop_toTopOf="@id/parent_layout"
+        android:layout_marginTop="100dp" android:layout_marginStart="0dp" android:layout_marginEnd="0dp"
+        android:layout_marginBottom="20dp" android:id="@+id/settings_menu">
+
+    <LinearLayout
+            android:id="@+id/settings_boardSize"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:orientation="vertical"
+            android:background="@drawable/menu_item_bg"
+            app:layout_constraintBottom_toTopOf="@+id/settings_onlinePlayersNumber"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+                android:id="@+id/settings_boardSize_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Set board size: 8"/>
+
+        <SeekBar
+                android:id="@+id/settings_boardSize_seekbar"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:max="5"
+                android:progress="2"
+                android:progressTint="@color/mainmenugreen"
+                android:thumbTint="@color/mainmenugreen"
+        />
+
+    </LinearLayout>
+
+    <LinearLayout
+            android:id="@+id/settings_onlinePlayersNumber"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:orientation="vertical"
+            android:background="@drawable/menu_item_bg"
+            app:layout_constraintBottom_toTopOf="@+id/settings_corpseMode"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+                android:id="@+id/settings_onlinePlayersNumber_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Set online player number: 4"/>
+
+        <SeekBar
+                android:id="@+id/settings_onlinePlayersNumber_seekbar"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:max="4"
+                android:progress="4"
+                android:progressTint="@color/mainmenugreen"
+                android:thumbTint="@color/mainmenugreen"
+        />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+            android:id="@+id/settings_corpseMode"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:orientation="horizontal"
+            android:background="@drawable/menu_item_bg"
+            app:layout_constraintBottom_toTopOf="@+id/settings_portalWallsMode"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+                android:id="@+id/settings_corpseMode_text"
+                android:layout_width="wrap_content"
+                android:layout_height="28dp"
+                android:gravity="center"
+                android:text="@string/corpsetext"
+                android:onClick="onWhatIsCorpse" tools:ignore="UsingOnClickInXml"/>
+
+        <ImageButton
+                android:id="@+id/settings_corpseMode_helper"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginStart="8dp"
+                android:background="#00000000"
+                android:onClick="onWhatIsCorpse"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/info"/>
+
+        <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:gravity="end">
+
+            <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/settings_corpseMode_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="8dp"
+                    tools:ignore="UseSwitchCompatOrMaterialXml"
+            />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+            android:id="@+id/settings_portalWallsMode"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:orientation="horizontal"
+            android:background="@drawable/menu_item_bg"
+            app:layout_constraintBottom_toTopOf="@+id/settings_back_btn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+                android:id="@+id/settings_portalWallsMode_text"
+                android:layout_width="wrap_content"
+                android:layout_height="28dp"
+                android:gravity="center"
+                android:text="@string/portaltext"
+                android:onClick="onWhatIsPortalwalls" tools:ignore="UsingOnClickInXml"/>
+
+        <ImageButton
+                android:id="@+id/settings_portalWallsMode_helper"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginStart="8dp"
+                android:background="#00000000"
+                android:onClick="onWhatIsPortalwalls"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/info" tools:ignore="UsingOnClickInXml"/>
+
+        <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:gravity="end">
+
+            <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/settings_portalWallsMode_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="8dp"
+                    android:text=""
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/settings_back_btn"
+            android:text="@string/back_btn2"
+            android:onClick="onClick"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:background="@drawable/menu_btn_bg"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="30dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+    />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,296 @@
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools" android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/parent_layout"
+        app:layout_constraintEnd_toEndOf="@id/parent_layout"
+        app:layout_constraintStart_toStartOf="@id/parent_layout"
+        app:layout_constraintTop_toTopOf="@id/parent_layout"
+        android:layout_marginTop="100dp" android:layout_marginStart="0dp" android:layout_marginEnd="0dp"
+        android:layout_marginBottom="20dp" android:id="@+id/hotseat_play_menu">
+
+    <LinearLayout
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="60dp"
+            app:layout_constraintBottom_toTopOf="@+id/hotseat_play">
+
+    <!-- Zero row of buttons -->
+    <LinearLayout
+            android:id="@+id/hotseat_row0"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp"
+    >
+
+        <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/hotseat_row0_state1"
+                android:textColor="@color/white"
+                android:background="@color/dracula_comment"
+                android:layout_width="200dp"
+                android:layout_height="35dp"
+                android:textSize="14sp"
+                android:text="Player 1"
+        />
+
+    </LinearLayout>
+
+        <!-- First row of buttons -->
+        <LinearLayout
+                android:id="@+id/hotseat_row1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="10dp"
+        >
+
+            <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/hotseat_row1_state1"
+                    android:onClick="onClick"
+                    android:textColor="@color/white"
+                    android:background="@color/purple_500"
+                    android:layout_width="200dp"
+                    android:layout_height="35dp"
+                    android:textSize="24sp"
+                    android:text="+"
+            />
+            <LinearLayout
+                    android:id="@+id/hotseat_row1_state2"
+                    android:layout_width="200dp"
+                    android:layout_height="35dp"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/hotseat_row1_state2_btn1"
+                        android:onClick="onClick"
+                        android:textColor="@color/white"
+                        android:background="@color/dark_green"
+                        android:layout_width="100dp"
+                        android:layout_height="35dp"
+                        android:text="player"/>
+
+                <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/hotseat_row1_state2_btn2"
+                        android:onClick="onClick"
+                        android:textColor="@color/white"
+                        android:background="@color/dracula_orange"
+                        android:layout_width="100dp"
+                        android:layout_height="35dp"
+                        android:text="bot"/>
+
+            </LinearLayout>
+            <LinearLayout
+                    android:id="@+id/hotseat_row1_state3"
+                    android:layout_width="200dp"
+                    android:layout_height="35dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:visibility="gone">
+
+                <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/hotseat_row1_state3_btn1"
+                        android:textColor="@color/white"
+                        android:background="@color/dracula_comment"
+                        android:layout_width="165dp"
+                        android:layout_height="35dp"
+                        android:textSize="14sp"
+                        android:text=""/>
+
+                <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/hotseat_row1_state3_btn2"
+                        android:onClick="onClick"
+                        android:textColor="@color/white"
+                        android:background="@color/dracula_red"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:textSize="20sp"
+                        android:text="x"/>
+
+            </LinearLayout>
+        </LinearLayout>
+        <!-- Second row of buttons -->
+        <LinearLayout
+                android:id="@+id/hotseat_row2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="10dp"
+        >
+
+            <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/hotseat_row2_state1"
+                    android:onClick="onClick"
+                    android:textColor="@color/white"
+                    android:background="@color/purple_500"
+                    android:layout_width="200dp"
+                    android:layout_height="35dp"
+                    android:textSize="24sp"
+                    android:text="+"
+            />
+            <LinearLayout
+                    android:id="@+id/hotseat_row2_state2"
+                    android:layout_width="200dp"
+                    android:layout_height="35dp"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/hotseat_row2_state2_btn1"
+                        android:onClick="onClick"
+                        android:textColor="@color/white"
+                        android:background="@color/dark_green"
+                        android:layout_width="100dp"
+                        android:layout_height="35dp"
+                        android:text="player"/>
+
+                <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/hotseat_row2_state2_btn2"
+                        android:onClick="onClick"
+                        android:textColor="@color/white"
+                        android:background="@color/dracula_orange"
+                        android:layout_width="100dp"
+                        android:layout_height="35dp"
+                        android:text="bot"/>
+
+            </LinearLayout>
+            <LinearLayout
+                    android:id="@+id/hotseat_row2_state3"
+                    android:layout_width="200dp"
+                    android:layout_height="35dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:visibility="gone">
+
+                <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/hotseat_row2_state3_btn1"
+                        android:textColor="@color/white"
+                        android:background="@color/dracula_comment"
+                        android:layout_width="165dp"
+                        android:layout_height="35dp"
+                        android:textSize="14sp"
+                        android:text=""/>
+
+                <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/hotseat_row2_state3_btn2"
+                        android:onClick="onClick"
+                        android:textColor="@color/white"
+                        android:background="@color/dracula_red"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:textSize="20sp"
+                        android:text="x"/>
+
+            </LinearLayout>
+        </LinearLayout>
+        <!-- Third row of buttons -->
+        <LinearLayout
+                android:id="@+id/hotseat_row3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="10dp"
+        >
+
+            <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/hotseat_row3_state1"
+                    android:onClick="onClick"
+                    android:textColor="@color/white"
+                    android:background="@color/purple_500"
+                    android:layout_width="200dp"
+                    android:layout_height="35dp"
+                    android:textSize="24sp"
+                    android:text="+"
+            />
+            <LinearLayout
+                    android:id="@+id/hotseat_row3_state2"
+                    android:layout_width="200dp"
+                    android:layout_height="35dp"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/hotseat_row3_state2_btn1"
+                        android:onClick="onClick"
+                        android:textColor="@color/white"
+                        android:background="@color/dark_green"
+                        android:layout_width="100dp"
+                        android:layout_height="35dp"
+                        android:text="player"/>
+
+                <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/hotseat_row3_state2_btn2"
+                        android:onClick="onClick"
+                        android:textColor="@color/white"
+                        android:background="@color/dracula_orange"
+                        android:layout_width="100dp"
+                        android:layout_height="35dp"
+                        android:text="bot"/>
+
+            </LinearLayout>
+            <LinearLayout
+                    android:id="@+id/hotseat_row3_state3"
+                    android:layout_width="200dp"
+                    android:layout_height="35dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:visibility="gone">
+
+                <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/hotseat_row3_state3_btn1"
+                        android:textColor="@color/white"
+                        android:background="@color/dracula_comment"
+                        android:layout_width="165dp"
+                        android:layout_height="35dp"
+                        android:textSize="14sp"
+                        android:text=""/>
+
+                <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/hotseat_row3_state3_btn2"
+                        android:onClick="onClick"
+                        android:textColor="@color/white"
+                        android:background="@color/dracula_red"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:textSize="20sp"
+                        android:text="x"/>
+
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/hotseat_play"
+            android:text="@string/play_btn"
+            android:onClick="onClick"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:background="@drawable/menu_btn_bg"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="30dp"
+            app:layout_constraintBottom_toTopOf="@+id/hotseat_back_btn"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/hotseat_back_btn"
+            android:text="@string/back_btn"
+            android:onClick="onClick"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:background="@drawable/menu_btn_bg"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="30dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+    />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/drawable/cancel_btn_bg.xml" value="0.187" />
+        <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/drawable/game_booster1_button_bg.xml" value="0.1" />
+        <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/drawable/game_booster2_btn_bg.xml" value="0.1" />
+        <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/drawable/game_booster_button_disabled_bg.xml" value="0.1" />
+        <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/drawable/game_move_btn_bg.xml" value="0.1" />
+        <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/drawable/hotseat_players_btn_bg.xml" value="0.187" />
+        <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
+        <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/drawable/ic_outline_settings_24.xml" value="0.1" />
+        <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/drawable/menu_btn_bg.xml" value="0.1855" />
+        <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/drawable/menu_item_bg.xml" value="0.2215" />
+        <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/layout/activity_game.xml" value="0.1896551724137931" />
+        <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/layout/hotseat_play_menu.xml" value="0.1" />
+        <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/layout/main_menu.xml" value="0.1" />
+        <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/layout/play_menu.xml" value="0.1" />
+        <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/layout/play_offline_layout.xml" value="0.3614583333333333" />
+        <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/layout/play_offline_menu.xml" value="0.3614583333333333" />
+        <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/layout/play_online_layout.xml" value="0.3614583333333333" />
+        <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/layout/play_online_menu.xml" value="0.3625" />
+        <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/layout/preferences_menu.xml" value="0.1755464480874317" />
+        <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/layout/settings_menu.xml" value="0.2" />
+        <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/menu/game_menu.xml" value="0.2859375" />
+      </map>
+    </option>
+  </component>
+  <component name="FrameworkDetectionExcludesConfiguration">
+    <file type="web" url="file://$PROJECT_DIR$/../sharedUtils" />
+    <file type="web" url="file://$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" project-jdk-name="corretto-11" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">TacticSnake-client</string>
+
+    <string name="gamename">Tactic Snake</string>
+
+    <string name="menucategory1">quick game</string>
+    <string name="menucategory2">play</string>
+        <string name="menusubcategory1">online game</string>
+        <string name="menusubcategory2">create private game</string>
+        <string name="menusubcategory3">hotseat</string>
+        <string name="menusubcategory4">Join private game</string>
+
+    <string name="menucategory3">game settings</string>
+        <string name="gamesettings1">Board size : 8</string>
+        <string name="gamesettings2">Number of players: 4</string>
+        <string name="gamesettings3">Corpse mode</string>
+        <string name="gamesettings4">Portal Walls</string>
+    <string name="menucategory4">player settings</string>
+        <string name="playersettings1">name</string>
+        <string name="playersettings2">snake color</string>
+
+    <string name="menucategory5">Instructions</string>
+
+    <string name="menucategory6">statistics</string>
+
+    <string name="back_btn">back</string>
+    <string name="back_btn2">done</string>
+    <string name="play_btn">play</string>
+
+    <string name="corpsetext">Corpse Mode</string>
+    <string name="portaltext">Portal Walls Mode</string>
+
+
+    <string name="imagedescriptor">image</string>
+
+    <string name="footer">Some Information hya?</string>
+</resources>
