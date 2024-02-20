@@ -1,7 +1,100 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="75024b99-9096-4327-b73e-9fffe6c8adee" name="Changes" comment="First commit" />
+    <list default="true" id="75024b99-9096-4327-b73e-9fffe6c8adee" name="Changes" comment="Uploading a project in development">
+      <change afterPath="$PROJECT_DIR$/TacticSnake-client/app/src/main/java/com/example/tacticsnake_client/singleton/AppSingleton.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TacticSnake-client/app/src/main/res/drawable/loading_animation.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TacticSnake-server/src/gui/GamesTab.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TacticSnake-server/src/tools/GameIdGenerator.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sharedUtils/src/main/java/com/shared/events/GameInfoEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-client/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-client/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-client/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-client/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-client/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-client/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-client/app/src/main/java/com/example/tacticsnake_client/BoardView.java" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-client/app/src/main/java/com/example/tacticsnake_client/BoardView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-client/app/src/main/java/com/example/tacticsnake_client/GameActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-client/app/src/main/java/com/example/tacticsnake_client/GameActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-client/app/src/main/java/com/example/tacticsnake_client/HotseatGame.java" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-client/app/src/main/java/com/example/tacticsnake_client/HotseatGame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-client/app/src/main/java/com/example/tacticsnake_client/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-client/app/src/main/java/com/example/tacticsnake_client/MainActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-client/app/src/main/java/com/example/tacticsnake_client/OfflinePlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-client/app/src/main/java/com/example/tacticsnake_client/OfflinePlayer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-client/app/src/main/java/com/example/tacticsnake_client/events/EventManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-client/app/src/main/java/com/example/tacticsnake_client/events/EventManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-client/app/src/main/java/com/example/tacticsnake_client/events/HotseatEventManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-client/app/src/main/java/com/example/tacticsnake_client/events/HotseatEventManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-client/app/src/main/java/com/example/tacticsnake_client/events/OnlineEventManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-client/app/src/main/java/com/example/tacticsnake_client/events/OnlineEventManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-client/app/src/main/res/drawable/bg.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-client/app/src/main/res/drawable/ic_build.xml" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-client/app/src/main/res/drawable/ic_build.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-client/app/src/main/res/drawable/ic_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-client/app/src/main/res/drawable/ic_settings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-client/app/src/main/res/layout/activity_game.xml" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-client/app/src/main/res/layout/activity_game.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-client/app/src/main/res/layout/activity_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-client/app/src/main/res/layout/activity_main.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-client/app/src/main/res/layout/hotseat_play_menu.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-client/app/src/main/res/layout/main_menu.xml" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-client/app/src/main/res/layout/main_menu.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-client/app/src/main/res/layout/play_menu.xml" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-client/app/src/main/res/layout/play_menu.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-client/app/src/main/res/layout/preferences_menu.xml" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-client/app/src/main/res/layout/preferences_menu.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-client/app/src/main/res/layout/settings_menu.xml" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-client/app/src/main/res/layout/settings_menu.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-client/app/src/main/res/values/colors.xml" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-client/app/src/main/res/values/colors.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-client/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-client/app/src/main/res/values/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-client/app/src/main/res/values/themes.xml" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-client/app/src/main/res/values/themes.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/TacticSnake-server/game/OnlineGame.class" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/out/production/TacticSnake-server/game/OnlineGame.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/TacticSnake-server/game/OnlinePlayer.class" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/out/production/TacticSnake-server/game/OnlinePlayer.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/TacticSnake-server/gui/GamesPanel.class" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/out/production/TacticSnake-server/gui/GamesPanel.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/TacticSnake-server/gui/MemoryUsagePanel.class" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/out/production/TacticSnake-server/gui/MemoryUsagePanel.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/TacticSnake-server/gui/ServerGUI.class" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/out/production/TacticSnake-server/gui/ServerGUI.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/TacticSnake-server/server/Server$ClientHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/out/production/TacticSnake-server/server/Server$ClientHandler.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/TacticSnake-server/server/Server.class" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/out/production/TacticSnake-server/server/Server.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/TacticSnake-server/timeout/TimeoutThread.class" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/out/production/TacticSnake-server/timeout/TimeoutThread.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/TacticSnake-server/tools/GameRoomCodeGenerator.class" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/out/production/TacticSnake-server/tools/GameRoomCodeGenerator.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/events/Event.class" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/events/Event.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/events/GameEnteredEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/events/GameEnteredEvent.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/events/GameInitiatedEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/events/GameInitiatedEvent.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/events/GameInvalidEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/events/GameInvalidEvent.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/events/GameJoinedEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/events/GameJoinedEvent.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/events/GameJoiningEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/events/GameJoiningEvent.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/events/GameLeftEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/events/GameLeftEvent.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/events/PlayerActiveGameEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/events/PlayerActiveGameEvent.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/events/PlayerDiedGameEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/events/PlayerDiedGameEvent.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/events/PlayerDisconnectedGameEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/events/PlayerDisconnectedGameEvent.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/events/PlayerJoinedGameEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/events/PlayerJoinedGameEvent.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/events/PlayerMoveBroadcastGameEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/events/PlayerMoveBroadcastGameEvent.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/events/PlayerMovedGameEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/events/PlayerMovedGameEvent.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/events/PlayerNumEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/events/PlayerNumEvent.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/events/PlayerResponseEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/events/PlayerResponseEvent.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/events/PlayerTimeoutGameEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/events/PlayerTimeoutGameEvent.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/events/PlayerWonGameEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/events/PlayerWonGameEvent.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/game/Game.class" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/game/Game.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/game/HotseatGame.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/game/Preferences.class" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/game/Preferences.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/player/BotLogic.class" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/player/BotLogic.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/player/DumbBot.class" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/player/DumbBot.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/player/OfflinePlayer.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/player/PlayerInfo.class" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/player/PlayerInfo.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/player/Snake.class" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/out/production/sharedUtils/com/shared/player/Snake.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/src/game/OnlineGame.java" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/src/game/OnlineGame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/src/game/OnlinePlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/src/game/OnlinePlayer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/src/gui/MemoryUsagePanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/src/gui/MemoryUsagePanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/src/gui/ServerGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/src/gui/ServerGUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/src/server/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/src/server/Server.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/src/tools/GameRoomCodeGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/src/tools/GameRoomCodeGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sharedUtils/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/sharedUtils/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sharedUtils/src/main/java/com/shared/events/GameEnteredEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/sharedUtils/src/main/java/com/shared/events/GameEnteredEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sharedUtils/src/main/java/com/shared/events/GameInitiatedEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/sharedUtils/src/main/java/com/shared/events/GameInitiatedEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sharedUtils/src/main/java/com/shared/events/GameJoinedEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/sharedUtils/src/main/java/com/shared/events/GameJoinedEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sharedUtils/src/main/java/com/shared/events/GameJoiningEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/sharedUtils/src/main/java/com/shared/events/GameJoiningEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sharedUtils/src/main/java/com/shared/events/GameLeftEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/sharedUtils/src/main/java/com/shared/events/GameLeftEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sharedUtils/src/main/java/com/shared/events/PlayerActiveGameEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/sharedUtils/src/main/java/com/shared/events/PlayerActiveGameEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sharedUtils/src/main/java/com/shared/events/PlayerDiedGameEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/sharedUtils/src/main/java/com/shared/events/PlayerDiedGameEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sharedUtils/src/main/java/com/shared/events/PlayerDisconnectedGameEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/sharedUtils/src/main/java/com/shared/events/PlayerDisconnectedGameEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sharedUtils/src/main/java/com/shared/events/PlayerMoveBroadcastGameEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/sharedUtils/src/main/java/com/shared/events/PlayerMoveBroadcastGameEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sharedUtils/src/main/java/com/shared/events/PlayerNumEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/sharedUtils/src/main/java/com/shared/events/PlayerNumEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sharedUtils/src/main/java/com/shared/events/PlayerResponseEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/sharedUtils/src/main/java/com/shared/events/PlayerResponseEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sharedUtils/src/main/java/com/shared/events/PlayerTimeoutGameEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/sharedUtils/src/main/java/com/shared/events/PlayerTimeoutGameEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sharedUtils/src/main/java/com/shared/events/PlayerWonGameEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/sharedUtils/src/main/java/com/shared/events/PlayerWonGameEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sharedUtils/src/main/java/com/shared/game/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/sharedUtils/src/main/java/com/shared/game/Game.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sharedUtils/src/main/java/com/shared/game/Preferences.java" beforeDir="false" afterPath="$PROJECT_DIR$/sharedUtils/src/main/java/com/shared/game/Preferences.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sharedUtils/src/main/java/com/shared/player/BotLogic.java" beforeDir="false" afterPath="$PROJECT_DIR$/sharedUtils/src/main/java/com/shared/player/BotLogic.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sharedUtils/src/main/java/com/shared/player/DumbBot.java" beforeDir="false" afterPath="$PROJECT_DIR$/sharedUtils/src/main/java/com/shared/player/DumbBot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sharedUtils/src/main/java/com/shared/player/PlayerInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/sharedUtils/src/main/java/com/shared/player/PlayerInfo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sharedUtils/src/main/java/com/shared/player/Snake.java" beforeDir="false" afterPath="$PROJECT_DIR$/sharedUtils/src/main/java/com/shared/player/Snake.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -29,7 +122,8 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "C:/Users/Admin/IdeaProjects/TacticSnakeProject"
+    "last_opened_file_path": "C:/Users/Admin/IdeaProjects/TacticSnakeProject",
+    "settings.editor.selected.configurable": "vcs.Subversion"
   }
 }]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -42,6 +136,8 @@
       <updated>1678625455457</updated>
       <workItem from="1678625457059" duration="7000" />
       <workItem from="1680022378331" duration="1227000" />
+      <workItem from="1680025250347" duration="384000" />
+      <workItem from="1708453986223" duration="377000" />
     </task>
     <task id="LOCAL-00001" summary="First commit">
       <created>1680022749002</created>
@@ -50,7 +146,14 @@
       <option name="project" value="LOCAL" />
       <updated>1680022749002</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Uploading a project in development">
+      <created>1680025537804</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1680025537804</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -81,6 +184,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="First commit" />
-    <option name="LAST_COMMIT_MESSAGE" value="First commit" />
+    <MESSAGE value="Uploading a project in development" />
+    <option name="LAST_COMMIT_MESSAGE" value="Uploading a project in development" />
   </component>
 </project>

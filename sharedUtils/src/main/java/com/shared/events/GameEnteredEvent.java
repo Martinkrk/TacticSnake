@@ -1,6 +1,6 @@
 package com.shared.events;
 
-public class GameEnteredEvent implements Event{
+public class GameEnteredEvent implements Event {
     private final int playersNum;
     private final int maxPlayers;
 

@@ -13,10 +13,4 @@ public class GameRoomCodeGenerator {
         }
         return builder.toString().toUpperCase();
     }
-
-    // Example usage
-    public static void main(String[] args) {
-        String uniqueId = generateHexString(4); // Generate an 4-character hex string
-        System.out.println(uniqueId);
-    }
 }

@@ -1,26 +1,33 @@
 package game;
 
 import com.shared.events.*;
+import com.shared.events.Event;
 import com.shared.game.Game;
 import com.shared.game.Preferences;
+import com.shared.player.BotLogic;
 import com.shared.player.PlayerInfo;
 import com.shared.player.Snake;
 
 import server.Server;
 import tools.GameRoomCodeGenerator;
+import tools.GameIdGenerator;
 
-import java.net.SocketException;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class OnlineGame extends Game {
     private final Server server;
+    private int gameId;
     private final String gameRoom; //By invitation: random HEX string, random game: empty string
     private boolean inSession;
 
     public OnlineGame(Preferences currentSettings, Server server) {
         super(currentSettings);
         this.server = server;
+        this.gameId = GameIdGenerator.getNextId();
         this.gameRoom = setGameRoom(currentSettings.isPrivate);
         this.inSession = false;
     }
@@ -32,101 +39,160 @@ public class OnlineGame extends Game {
     @Override
     public void startGame() {
         List<PlayerInfo> playerInfoList = new ArrayList<>();
-        int i = 0;
+        int playerNum = 0;
         for (Snake player : getPlayers()) {
-            playerInfoList.add(new PlayerInfo(i));
-            player.sendEvent(new PlayerNumEvent(i));
-            player.setPlayerNum(i);
-            player.setSnakeDirection(i+1);
-            player.setSnakeHead(new int[] {1, 1});
+            if (!(player instanceof BotLogic)) {
+                player.sendObject(new PlayerNumEvent(playerNum));
+            }
+            playerInfoList.add(new PlayerInfo(playerNum, getStartingPos()[playerNum], getStartingPos()[playerNum][2], player.getSnakeColor()));
+            player.setPlayerNum(playerNum);
+            player.setSnakeDirection(playerNum+1);
+            player.setSnakeHead(getStartingPos()[playerNum]);
             player.setSnakeBuried(1);
-            i++;
+            player.addMoveToHistory(getStartingPos()[playerNum]);
+            playerNum++;
         }
+        broadcast(getCurrentSettings());
         broadcast(new GameInitiatedEvent(playerInfoList));
         setCurrentTurn(getPlayers().size()-1);
-        nextPlayer();
         setInSession(true);
-        //TODO change other game states?
+
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {}
+            handleNextTurn();
     }
 
     public Server getServer() {
         return server;
     }
 
-    public void nextPlayer() {
-        setCurrentTurn((getCurrentTurn()+1) % getCurrentSettings().playersNum);
-        System.out.println("current move is: " + getCurrentTurn());
-        for (Snake player : getPlayers()) {
-            if (player.getPlayerNum() == this.getCurrentTurn() && !player.isDead()) {
-                if (arePossibleMoves(player)) {
-                    broadcast(new PlayerActiveGameEvent(player.getPlayerNum()));
-                    try {
-                        ((OnlinePlayer)player).getSocket().setSoTimeout(10000);
-                    } catch (SocketException e) {
-                        System.out.println(e);;
-                    }
-                } else {
-                    processDeath(player);
-                }
-                return;
-            }
+    @Override
+    public void addPlayer(Snake player) {
+        getPlayers().add(player);
+        //tell all clients a new client has joined and how many are in the game already
+        if (!(player instanceof BotLogic)) {
+            player.sendObject(new GameEnteredEvent(this.getPlayers().size(), this.getCurrentSettings().playersNum));
         }
-        nextPlayer();
-    }
-
-    public void processDisconnect(OnlinePlayer player) {
-        getPlayers().remove(player);
-
-        Event disconnectEvent;
-        System.out.println("disconnecting");
-        if (isInSession()) {
-        System.out.println("disconnecting in session");
-            if(!isGameOver() && !player.isDead()) {
-        System.out.println("disconnecting not over not dead");
-                disconnectEvent = new PlayerDisconnectedGameEvent(player.getPlayerNum(), player.getMoveHistory());
-                broadcast(disconnectEvent);
-                processDeath(player);
-            } else if (isGameOver() && getPlayers().size() < 1) {
-                System.out.println("disconnecting over and no players");
-                removeGame();
-            }
-        } else {
-            System.out.println("disconnecting not in session");
-            disconnectEvent = new GameLeftEvent();
-            broadcast(disconnectEvent);
-
-            if (getPlayers().size() < 1) {
-                removeGame();
-            }
+        broadcast(new GameJoinedEvent(getPlayers().size(), getCurrentSettings().playersNum));
+        if (getCurrentSettings().playersNum == getPlayers().size()) {
+            startGame();
         }
     }
 
-    public void checkAlivePlayers() {
+    private boolean hasAnyoneWon() {
+        Snake alivePlayer = null;
         int alive = 0;
-        int index = 0;
-        for (Snake playerItem : getPlayers()) {
-            if (!playerItem.isDead()) {
-                index = getPlayers().indexOf(playerItem);
+        for (Snake player : getPlayers()) {
+            if (!player.isDisconnected() && !player.isDead()) {
                 alive++;
+                alivePlayer = player;
             }
         }
         if (alive == 1) {
-            System.out.println("Last man standing");
-            broadcast(new PlayerWonGameEvent(getPlayers().get(index).getPlayerNum()));
+            handleVictory(alivePlayer);
+            closeGameTimer();
             setGameOver(true);
-            //TODO close game after 5 seconds
-        } else if (alive > 1) {
-            nextPlayer();
-        } else if (alive == 0) {
-            //TODO close all client's sockets
-            removeGame();
+            return true;
+        }
+        return false;
+    }
+
+    private void handleVictory(Snake alivePlayer) {
+        setGameOver(true);
+        broadcast(new PlayerWonGameEvent(alivePlayer.getPlayerNum(), alivePlayer.getNick()));
+    }
+
+    @Override
+    public void handleNextTurn() {
+        setCurrentTurn((getCurrentTurn()+1) % getCurrentSettings().playersNum);
+        System.out.println("current move is: " + getCurrentTurn());
+        for (Snake player : getPlayers()) {
+            if (player.getPlayerNum() == getCurrentTurn()) {
+                if (player.isDead()) {
+                    setCurrentTurn((getCurrentTurn() + 1) % getCurrentSettings().playersNum);
+                    break;
+                } else if (player.isDisconnected()) {
+                    handleDeath(player);
+                    setCurrentTurn((getCurrentTurn() + 1) % getCurrentSettings().playersNum);
+                    break;
+                } else {
+                    if (arePossibleMoves(player)) {
+                        broadcast(new PlayerActiveGameEvent(player.getPlayerNum(), player.getNick()));
+                    } else {
+                        handleDeath(player);
+                        break;
+                    }
+                    return;
+                }
+            }
+        }
+        if (!isGameOver()) {
+            handleNextTurn();
         }
     }
 
-    public void processDeath(Snake player) {
+    public void handleDisconnect(OnlinePlayer player) {
+        System.out.println("Disconnection process for " + player.getNick());
+        disconnectPlayer(player);
+        player.setDisconnected(true);
+
+        Event disconnectEvent;
+        if (isInSession()) {
+            System.out.println("Disconnecting, in session");
+            disconnectEvent = new PlayerDisconnectedGameEvent(player.getPlayerNum(), player.getNick());
+            broadcast(disconnectEvent);
+            if (!hasAnyoneWon() && player.getPlayerNum() == getCurrentTurn()) {
+                handleDeath(player);
+            }
+        } else {
+            System.out.println("Disconnecting, not in session");
+            removePlayer(player);
+            disconnectEvent = new GameLeftEvent(getPlayers().size(), getCurrentSettings().playersNum);
+            broadcast(disconnectEvent);
+            if (getPlayers().size() < 1) removeGame();
+        }
+        server.sendLog("INFO", String.format("(%s) %s has disconnected.", player.getSocket().getInetAddress(), player.getNick()));
+    }
+
+    private void disconnectPlayer(OnlinePlayer player) {
+        try {
+            player.getSocket().close();
+            player.getOut().close();
+            player.getIn().close();
+            System.out.println("socket and streams closed");
+        } catch (IOException e) {
+            System.out.println("couldn't close socket or streams");
+        }
+    }
+
+    private void closeGameTimer() {
+        Timer closeGameTimer = new Timer();;
+        try {
+            closeGameTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    removeGame();
+                }
+            }, 5000);
+
+        } catch (Exception e) {
+
+        }
+    }
+
+    public void handleDeath(Snake player) {
+        System.out.println("Handling death for: " +  player.getNick());
         player.setDead(true);
-        broadcast(new PlayerDiedGameEvent(player.getPlayerNum(), player.getMoveHistory()));
-        checkAlivePlayers();
+        movesRemove(player.getMoveHistory());
+        broadcast(new PlayerDiedGameEvent(player.getPlayerNum(), player.getNick(), player.getMoveHistory(), player.getSnakeDirection(), player.getSnakeColor(), player.getSnakeBuried()));
+        if (!hasAnyoneWon()) {
+            handleNextTurn();
+        }
+    }
+
+    public void sendLog(String logType, String logMessage) {
+        server.sendLog(logType, logMessage);
     }
 
     public String getGameRoom() {
@@ -144,6 +210,10 @@ public class OnlineGame extends Game {
 
     public void setInSession(boolean inSession) {
         this.inSession = inSession;
+    }
+
+    public int getGameId() {
+        return gameId;
     }
 }
 

@@ -1,15 +1,19 @@
 package com.shared.events;
 
-import com.shared.player.PlayerInfo;
-
 public class PlayerActiveGameEvent implements Event {
-    private final int playerNum;
+    private final int who;
+    private final String nick;
 
-    public PlayerActiveGameEvent(int playerNum) {
-        this.playerNum = playerNum;
+    public PlayerActiveGameEvent(int who, String nick) {
+        this.who = who;
+        this.nick = nick;
     }
 
-    public int getPlayerNum() {
-        return playerNum;
+    public int getWho() {
+        return who;
+    }
+
+    public String getNick() {
+        return nick;
     }
 }

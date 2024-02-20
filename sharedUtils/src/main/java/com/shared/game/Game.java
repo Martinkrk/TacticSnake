@@ -1,19 +1,26 @@
 package com.shared.game;
 
 import com.shared.events.*;
+import com.shared.events.Event;
 import com.shared.player.BotLogic;
 import com.shared.player.Snake;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public abstract class Game {
+public abstract class Game implements Serializable {
     private int currentTurn;
     private Preferences currentSettings;
     private List<Snake> players;
     private List<List<Integer>> tiles;
     private boolean gameOver;
 
+    //starting positions and rotations
+    private static int[][] startingPos;
+
+    //Valid moves
     private static final int[][] movesCommon = new int[][] {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
     private static final int[][] movesDiagonal = new int[][] {{-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
     private static final int[][] movesJump = new int[][] {{-2, 0}, {2, 0}, {0, -2}, {0, 2}};
@@ -26,30 +33,32 @@ public abstract class Game {
         this.tiles = new ArrayList<>();
         fillTiles();
         this.gameOver = false;
+        startingPos = new int[][] {{0, 0, 90}, {currentSettings.fieldWith-1, currentSettings.fieldHeight-1, 270},
+                {currentSettings.fieldWith-1, 0, 180}, {0, currentSettings.fieldHeight-1, 0}};
     }
 
     public boolean arePossibleMoves(Snake player) {
         int x = player.getSnakeHead()[0];
         int y = player.getSnakeHead()[1];
 
-        if (checkBounds(x, y, movesCommon)) return true;
+        if (checkLegalInBounds(x, y, movesCommon)) return true;
 
         if (player.getJumpBoost() > 0) {
-            if (checkBounds(x, y, movesJump)) return true;
+            if (checkLegalInBounds(x, y, movesJump)) return true;
         }
 
         if (player.getDiagonalBoost() > 0) {
-            if (checkBounds(x, y, movesDiagonal)) return true;
+            if (checkLegalInBounds(x, y, movesDiagonal)) return true;
         }
 
         if (player.getJumpBoost() > 0 && player.getDiagonalBoost() > 0) {
-            if (checkBounds(x, y, movesKnight)) return true;
+            if (checkLegalInBounds(x, y, movesKnight)) return true;
         }
 
         return false;
     }
 
-    private boolean checkBounds(int x, int y, int[][] moves) {
+    private boolean checkLegalInBounds(int x, int y, int[][] moves) {
         for (int[] move : moves) {
             if (x + move[0] >= 0 && x + move[0] < getCurrentSettings().fieldWith &&
                     y + move[1] >= 0 && y + move[1] < getCurrentSettings().fieldHeight) {
@@ -134,6 +143,9 @@ public abstract class Game {
         int diffX = event.getMove()[0] - bodyCoords[0];
         int diffY = event.getMove()[1] - bodyCoords[1];
 
+        System.err.println("SNAKE HEAD " + Arrays.toString(player.getSnakeHead()));
+        System.err.println("SNAKE MOVE " + Arrays.toString(event.getMove()));
+
         //Head
         if (player.isUsedJump() && player.isUsedDiagonal()) {
             if (Math.abs(diffX) > Math.abs(diffY)) {
@@ -195,42 +207,40 @@ public abstract class Game {
             }
             headDirection = newRotation;
         } else {
-            if (diffX > 0) {
+            if (diffY > 0) {
                 headDirection = 1;
-            } else if (diffX < 0) {
-                headDirection = 3;
-            } else if (diffY > 0) {
-                headDirection = 2;
             } else if (diffY < 0) {
+                headDirection = 3;
+            } else if (diffX > 0) {
+                headDirection = 2;
+            } else if (diffX < 0) {
                 headDirection = 0;
             }
         }
 
-        //TODO check all possible moves including consecutive
-
         if (player.getSnakeBuried() == 1) {
             if (player.isUsedDiagonal() || player.isUsedJump()) {
-                bodySprite = 3;
-                headSprite = 1;
-            } else {
-                bodySprite = 2;
-                bodyRotation = (headDirection + 2) % 4;
+                bodySprite = 5;
                 headSprite = 0;
+            } else {
+                bodySprite = 4;
+                bodyRotation = (headDirection + 2) % 4;
+                headSprite = 1;
                 player.setSnakeBuried(0);
             }
         } else if (player.getSnakeBuried() == 0) {
             if (player.isUsedDiagonal() || player.isUsedJump()) {
                 player.setSnakeBuried(1);
-                bodySprite = 2;
-                headSprite = 1;
-            } else {
+                bodySprite = 4;
                 headSprite = 0;
+            } else {
+                headSprite = 1;
                 if (headDirection - bodyRotation == 0) {
-                    bodySprite = 0;
+                    bodySprite = 2;
                 } else if (headDirection - bodyRotation == 1 || headDirection - bodyRotation == -3) {
-                    bodySprite = 1;
+                    bodySprite = 3;
                 } else if (headDirection - bodyRotation == -1 || headDirection - bodyRotation == 3) {
-                    bodySprite = 1;
+                    bodySprite = 3;
                     bodyMirror = 1;
                 } else {
                     System.out.println("headD " + headDirection + " bodyR " + bodyRotation);
@@ -244,10 +254,16 @@ public abstract class Game {
         player.setSnakeDirection(headDirection);
 
         int[] sprites = new int[] {bodySprite, headSprite};
-        int[] rotations = new int[] {bodyRotation, headDirection};
+        int[] rotations = new int[] {bodyRotation*90, headDirection*90};
 
-        PlayerMoveBroadcastGameEvent pmbge = new PlayerMoveBroadcastGameEvent(player.getPlayerNum(), bodyCoords, event.getMove(), sprites, rotations, bodyMirror);
+        PlayerMoveBroadcastGameEvent pmbge = new PlayerMoveBroadcastGameEvent(player.getPlayerNum(), player.getNick(), bodyCoords, event.getMove(), sprites, rotations, bodyMirror, player.getSnakeColor());
         return pmbge;
+    }
+
+    public void movesRemove(List<int[]> moves) {
+        for (int[] move : moves) {
+            tiles.get(move[0]).set(move[1], 0);
+        }
     }
 
     public void acceptMove(int x, int y) {
@@ -265,26 +281,17 @@ public abstract class Game {
 
     }
 
-    public void broadcast(Event event) {
+    public void broadcast(Object object) {
         for (Snake player : getPlayers()) {
             if (player instanceof BotLogic) continue;
-            player.sendEvent(event);
+            if (!player.isDisconnected()) player.sendObject(object);
+            if (object instanceof PlayerDisconnectedGameEvent) System.out.println("PlayerDisconnectedGameEvent was sent");
         }
     }
 
-    public void addPlayer(Snake player) {
-        getPlayers().add(player);
-        //tell all clients a new client has joined and how many are in the game already
-        player.sendEvent(new GameEnteredEvent(this.getPlayers().size(), this.getCurrentSettings().playersNum));
-        broadcast(new GameJoinedEvent());
-        if (getCurrentSettings().playersNum == getPlayers().size()) {
-            startGame();
-        }
-    }
+    abstract public void addPlayer(Snake player);
 
-    public void nextPlayer() {
-
-    }
+    abstract public void handleNextTurn();
 
     public List<Snake> getPlayers() {
         return players;
@@ -295,7 +302,7 @@ public abstract class Game {
     }
 
     public void removePlayer(Snake player) {
-        this.players.remove(player);
+        players.remove(player);
     }
 
     public boolean isGameOver() {
@@ -332,6 +339,10 @@ public abstract class Game {
 
     public boolean isValidMove(PlayerMovedGameEvent pmge) {
         return true;
+    }
+
+    public static int[][] getStartingPos() {
+        return startingPos;
     }
 
     public abstract void startGame();

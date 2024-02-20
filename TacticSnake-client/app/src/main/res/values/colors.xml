@@ -12,6 +12,7 @@
     <color name="dark_green">#FF00AA00</color>
     <color name="blue">#FF0000FF</color>
     <color name="gray">#999999</color>
+    <color name="light_gray">#BBBBBB</color>
     <color name="mainmenugreen">#4aca4a</color>
     <color name="dracula_bg">#282a36</color>
     <color name="dracula_fg">#f8f8f2</color>
@@ -22,4 +23,7 @@
     <color name="dracula_white">#f8f8f2</color>
     <color name="dracula_orange">#ffb86c</color>
     <color name="dracula_red">#ff5555</color>
+
+    <color name="seekbar_progress">#726afe</color>
+    <color name="purple_main">#3600ff</color>
 </resources>

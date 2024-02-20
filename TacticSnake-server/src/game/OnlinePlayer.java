@@ -1,27 +1,23 @@
 package game;
 
-import com.shared.events.Event;
 import com.shared.game.Game;
 import com.shared.player.Snake;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 public class OnlinePlayer extends Snake {
     private final Socket socket;
     private final ObjectOutputStream out;
-    private final String name;
+    private final ObjectInputStream in;
 
-    public OnlinePlayer(Game assignedGame, String name, ObjectOutputStream out, Socket socket) {
-        super(assignedGame);
+    public OnlinePlayer(Game assignedGame, String nick, ObjectOutputStream out, ObjectInputStream in, Socket socket) {
+        super(assignedGame, nick);
         this.socket = socket;
         this.out = out;
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
+        this.in = in;
     }
 
     public Socket getSocket() {
@@ -32,13 +28,20 @@ public class OnlinePlayer extends Snake {
         return out;
     }
 
-    @Override
-    public void sendEvent(Event event) {
+    public ObjectInputStream getIn() {
+        return in;
+    }
+
+    public void setOnlineSnakeColor(int[] color) {
+
+    }
+
+    public void sendObject(Object object) {
         try {
-            out.writeObject(event);
+            out.writeObject(object);
             out.flush();
         } catch (IOException e) {
-            System.out.println("Couldn't send event to client " + this);
+            System.out.println("Couldn't send object to client " + this);
         }
     }
 }

@@ -6,7 +6,6 @@ import java.util.List;
 
 public class GameInitiatedEvent implements Event {
     private final List<PlayerInfo> players;
-    private int playerNum;
 
     public GameInitiatedEvent(List<PlayerInfo> players) {
         this.players = players;
@@ -14,13 +13,5 @@ public class GameInitiatedEvent implements Event {
 
     public List<PlayerInfo> getPlayers() {
         return players;
-    }
-
-    public int getPlayerNum() {
-        return playerNum;
-    }
-
-    public void setPlayerNum(int playerNum) {
-        this.playerNum = playerNum;
     }
 }

@@ -5,11 +5,12 @@ import com.shared.game.Game;
 
 public class DumbBot extends Snake implements BotLogic {
     public DumbBot(Game assignedGame, int playerNum) {
-        super(assignedGame);
+        super(assignedGame, "Dumb Bot");
+        setPlayerNum(playerNum);
     }
 
     @Override
-    public void sendEvent(Event event) {}
+    public void sendObject(Object object) {}
 
     @Override
     public int[] generateMove() {

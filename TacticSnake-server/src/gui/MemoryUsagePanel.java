@@ -1,64 +1,106 @@
 package gui;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
-import javax.swing.*;
-
-public class MemoryUsagePanel extends JPanel {
-    private JLabel heapLabel, nonHeapLabel;
-    private MemoryMXBean memoryMXBean;
+public class MemoryUsagePanel extends JPanel implements Runnable {
+    private static final long serialVersionUID = 1L;
+    private JLabel usedLabel;
+    private JLabel freeLabel;
+    private JLabel maxLabel;
+    private JLabel currentLabel;
+    private double maxMemory;
+    private double currentMemory;
 
     public MemoryUsagePanel() {
-        // Set the layout and border of the panel
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        setLayout(new BorderLayout());
 
-        // Get the MemoryMXBean instance to retrieve the memory usage information
-        memoryMXBean = ManagementFactory.getMemoryMXBean();
+        JPanel labelsPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.LINE_START;
+        gbc.insets.left = 5;
+        gbc.insets.bottom = 2;
+        gbc.weightx = 1;
+        gbc.weighty = 1;
 
-        // Create two JLabels to display the heap and non-heap memory usage
-        heapLabel = new JLabel();
-        nonHeapLabel = new JLabel();
+        JLabel usedTitleLabel = new JLabel("Used:");
+        usedLabel = new JLabel("0.0 MB");
+        usedLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        gbc.gridy++;
+        labelsPanel.add(usedTitleLabel, gbc);
+        gbc.gridx++;
+        labelsPanel.add(usedLabel, gbc);
 
-        // Add the labels to the panel
-        add(new JLabel("Heap Memory Usage:"));
-        add(heapLabel);
-        add(new JLabel("Non-Heap Memory Usage:"));
-        add(nonHeapLabel);
+        JLabel freeTitleLabel = new JLabel("Free:");
+        freeLabel = new JLabel("0.0 MB");
+        freeLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        gbc.gridx = 0;
+        gbc.gridy++;
+        labelsPanel.add(freeTitleLabel, gbc);
+        gbc.gridx++;
+        labelsPanel.add(freeLabel, gbc);
 
-        // Update the memory usage labels every second
-        new Thread(() -> {
-            while (true) {
-                MemoryUsage heapMemoryUsage = memoryMXBean.getHeapMemoryUsage();
-                MemoryUsage nonHeapMemoryUsage = memoryMXBean.getNonHeapMemoryUsage();
-                heapLabel.setText(String.format("<html><pre>%-20s %10s<br>%-20s %10s<br>%-20s %10s</pre></html>",
-                        "Initial Memory:", formatSize(heapMemoryUsage.getInit()),
-                        "Used Memory:", formatSize(heapMemoryUsage.getUsed()),
-                        "Max Memory:", formatSize(heapMemoryUsage.getMax())));
-                nonHeapLabel.setText(String.format("<html><pre>%-20s %10s<br>%-20s %10s<br>%-20s %10s</pre></html>",
-                        "Initial Memory:", formatSize(nonHeapMemoryUsage.getInit()),
-                        "Used Memory:", formatSize(nonHeapMemoryUsage.getUsed()),
-                        "Max Memory:", formatSize(nonHeapMemoryUsage.getMax())));
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+        JLabel maxTitleLabel = new JLabel("Max:");
+        maxLabel = new JLabel("0.0 MB");
+        maxLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        gbc.gridx = 0;
+        gbc.gridy++;
+        labelsPanel.add(maxTitleLabel, gbc);
+        gbc.gridx++;
+        labelsPanel.add(maxLabel, gbc);
+
+        JLabel currentTitleLabel = new JLabel("Current:");
+        currentLabel = new JLabel("0.0 MB");
+        currentLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        gbc.gridx = 0;
+        gbc.gridy++;
+        labelsPanel.add(currentTitleLabel, gbc);
+        gbc.gridx++;
+        labelsPanel.add(currentLabel, gbc);
+
+        add(labelsPanel, BorderLayout.CENTER);
+
+        MemoryMXBean memoryBean = ManagementFactory.getMemoryMXBean();
+        MemoryUsage usage = memoryBean.getHeapMemoryUsage();
+        maxMemory = usage.getMax() / (1024.0 * 1024.0);
+
+        Thread thread = new Thread(this);
+        thread.start();
+    }
+
+    public void run() {
+        while (true) {
+            MemoryMXBean memoryBean = ManagementFactory.getMemoryMXBean();
+            MemoryUsage usage = memoryBean.getHeapMemoryUsage();
+            double usedMemory = usage.getUsed() / (1024.0 * 1024.0);
+            double freeMemory = (usage.getMax() - usage.getUsed()) / (1024.0 * 1024.0);
+            currentMemory = usage.getCommitted() / (1024.0 * 1024.0);
+
+            usedLabel.setText(String.format("%.1f MB", usedMemory));
+            freeLabel.setText(String.format("%.1f MB", freeMemory));
+            currentLabel.setText(String.format("%.1f MB", currentMemory));
+
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        }).start();
-    }
 
-    private String formatSize(long bytes) {
-        String[] units = {"B", "KB", "MB", "GB", "TB"};
-        int index = 0;
-        double size = bytes;
-        while (size >= 1024 && index < units.length - 1) {
-            size /= 1024;
-            index++;
+            repaint();
         }
-        return String.format("%.2f %s", size, units[index]);
     }
-
 }

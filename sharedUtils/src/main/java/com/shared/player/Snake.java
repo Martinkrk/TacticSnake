@@ -1,6 +1,5 @@
 package com.shared.player;
 
-import com.shared.events.Event;
 import com.shared.game.Game;
 
 import java.util.ArrayList;
@@ -9,19 +8,24 @@ import java.util.List;
 public abstract class Snake {
     private final Game assignedGame;
     private int playerNum;
+    private String nick;
     private int[] snakeHead;
     private Integer snakeDirection;
     private Integer snakeBuried;
     private boolean isDead;
-    private List<Integer[]> moveHistory;
+    private boolean isDisconnected;
+    private List<int[]> moveHistory;
     private int diagonalBoost;
     private int jumpBoost;
     private boolean usedDiagonal;
     private boolean usedJump;
+    private int[] snakeColor = new int[3];
 
-    public Snake(Game assignedGame) {
+    public Snake(Game assignedGame, String nick) {
         this.assignedGame = assignedGame;
+        this.nick = nick;
         this.isDead = false;
+        this.isDisconnected = false;
         this.snakeBuried = 0;
         this.moveHistory = new ArrayList<>();
         this.diagonalBoost = 1;
@@ -51,6 +55,14 @@ public abstract class Snake {
 
     public void setPlayerNum(int playerNum) {
         this.playerNum = playerNum;
+    }
+
+    public String getNick() {
+        return nick;
+    }
+
+    public void setNick(String nick) {
+        this.nick = nick;
     }
 
     public int[] getSnakeHead() {
@@ -85,16 +97,28 @@ public abstract class Snake {
         isDead = dead;
     }
 
-    public List<Integer[]> getMoveHistory() {
+    public boolean isDisconnected() {
+        return isDisconnected;
+    }
+
+    public void setDisconnected(boolean disconnected) {
+        isDisconnected = disconnected;
+    }
+
+    public List<int[]> getMoveHistory() {
         return moveHistory;
     }
 
-    public void setMoveHistory(List<Integer[]> moveHistory) {
+    public void setMoveHistory(List<int[]> moveHistory) {
         this.moveHistory = moveHistory;
     }
 
+    public void addMoveToHistory(int[] move) {
+        moveHistory.add(move);
+    }
+
     public void addMoveHistory(int[] move) {
-        getMoveHistory().add(new Integer[]{move[0], move[1]});
+        getMoveHistory().add(move);
     }
 
     public int getDiagonalBoost() {
@@ -129,5 +153,13 @@ public abstract class Snake {
         this.usedJump = usedJump;
     }
 
-    public abstract void sendEvent(Event event);
+    public int[] getSnakeColor() {
+        return snakeColor;
+    }
+
+    public void setSnakeColor(int[] snakeColor) {
+        this.snakeColor = snakeColor;
+    }
+
+    public abstract void sendObject(Object object);
 }

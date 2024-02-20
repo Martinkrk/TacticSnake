@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="0dp"
+        android:layout_height="0dp" xmlns:tools="http://schemas.android.com/tools"
+        app:layout_constraintBottom_toBottomOf="@id/parent_layout"
+        app:layout_constraintEnd_toEndOf="@id/parent_layout"
+        app:layout_constraintStart_toStartOf="@id/parent_layout"
+        app:layout_constraintTop_toTopOf="@id/parent_layout"
+        android:layout_marginTop="200dp" android:layout_marginStart="0dp" android:layout_marginEnd="0dp"
+        android:layout_marginBottom="20dp" android:id="@+id/play_online_menu">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/settings_private"
+            android:layout_width="300dp"
+            android:layout_height="30dp"
+            android:background="@mipmap/item_pill"
+            app:layout_constraintBottom_toTopOf="@+id/settings_boardSize"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginBottom="15dp"
+    >
+
+        <TextView
+                android:id="@+id/settings_private_text"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:text="@string/privatetext"
+                android:textColor="@color/black"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                android:onClick="onWhatIsPrivate" tools:ignore="UsingOnClickInXml"
+        />
+
+        <ImageButton
+                android:id="@+id/settings_private_helper"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:background="#00000000"
+                android:onClick="onWhatIsPrivate"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/info" tools:ignore="UsingOnClickInXml"
+                app:layout_constraintStart_toEndOf="@+id/settings_private_text"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="2dp"
+        />
+
+        <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/settings_private_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:thumb="@drawable/custom_switch_thumb"
+                app:track="@drawable/custom_switch_track"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginEnd="24dp"
+        />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+            android:id="@+id/settings_boardSize"
+            android:layout_width="300dp"
+            android:layout_height="30dp"
+            android:background="@mipmap/item_pill"
+            app:layout_constraintBottom_toTopOf="@+id/settings_onlinePlayersNumber"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginBottom="15dp"
+    >
+
+        <TextView
+                android:id="@+id/settings_boardSize_text"
+                android:layout_width="120dp"
+                android:layout_height="24dp"
+                android:text=""
+                android:textColor="@color/black"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+        />
+
+        <SeekBar
+                android:id="@+id/settings_boardSize_seekbar"
+                android:layout_width="160dp"
+                android:layout_height="24dp"
+                android:progressDrawable="@drawable/custom_seekbar"
+                android:thumb="@mipmap/thumb"
+                android:splitTrack="false"
+                android:minHeight="10dip"
+                android:maxHeight="10dip"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="3dp"
+                android:layout_marginEnd="5dp"
+                android:max="4"
+                android:progress="2"
+        />
+
+    </LinearLayout>
+
+    <LinearLayout
+            android:id="@+id/settings_onlinePlayersNumber"
+            android:layout_width="300dp"
+            android:layout_height="30dp"
+            android:background="@mipmap/item_pill"
+            app:layout_constraintBottom_toTopOf="@+id/settings_corpseMode"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginBottom="15dp"
+    >
+
+        <TextView
+                android:id="@+id/settings_onlinePlayersNumber_text"
+                android:layout_width="120dp"
+                android:layout_height="24dp"
+                android:text=""
+                android:textColor="@color/black"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+        />
+
+        <SeekBar
+                android:id="@+id/settings_onlinePlayersNumber_seekbar"
+                android:layout_width="160dp"
+                android:layout_height="24dp"
+                android:progressDrawable="@drawable/custom_seekbar"
+                android:thumb="@mipmap/thumb"
+                android:splitTrack="false"
+                android:minHeight="10dip"
+                android:maxHeight="10dip"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="3dp"
+                android:layout_marginEnd="5dp"
+                android:max="2"
+                android:progress="2"
+        />
+
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/settings_corpseMode"
+            android:layout_width="300dp"
+            android:layout_height="30dp"
+            android:background="@mipmap/item_pill"
+            app:layout_constraintBottom_toTopOf="@+id/settings_portalWallsMode"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginBottom="15dp"
+    >
+
+        <TextView
+                android:id="@+id/settings_corpseMode_text"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:text="@string/corpsetext"
+                android:textColor="@color/black"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                android:onClick="onWhatIsCorpse" tools:ignore="UsingOnClickInXml"
+        />
+
+        <ImageButton
+                android:id="@+id/settings_corpseMode_helper"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:background="#00000000"
+                android:onClick="onWhatIsCorpse"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/info" tools:ignore="UsingOnClickInXml"
+                app:layout_constraintStart_toEndOf="@+id/settings_corpseMode_text"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="2dp"
+        />
+
+        <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/settings_corpseMode_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:thumb="@drawable/custom_switch_thumb"
+                app:track="@drawable/custom_switch_track"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginEnd="24dp"
+        />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/settings_portalWallsMode"
+            android:layout_width="300dp"
+            android:layout_height="30dp"
+            android:background="@mipmap/item_pill"
+            app:layout_constraintBottom_toTopOf="@+id/onlineMenu_play_btn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginBottom="30dp"
+    >
+
+        <TextView
+                android:id="@+id/settings_portalWallsMode_text"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:text="@string/portaltext"
+                android:textColor="@color/black"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                android:onClick="onWhatIsPortalWalls" tools:ignore="UsingOnClickInXml"
+        />
+
+        <ImageButton
+                android:id="@+id/settings_portalWallsMode_helper"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:background="#00000000"
+                android:onClick="onWhatIsPortalWalls"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/info" tools:ignore="UsingOnClickInXml"
+                app:layout_constraintStart_toEndOf="@+id/settings_portalWallsMode_text"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="2dp"
+        />
+
+        <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/settings_portalWallsMode_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:thumb="@drawable/custom_switch_thumb"
+                app:track="@drawable/custom_switch_track"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginEnd="24dp"
+        />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/onlineMenu_play_btn"
+            android:text="@string/onlineplaybtn"
+            android:onClick="onClick"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:background="@mipmap/menu_btn_yellow"
+            android:layout_width="150dp"
+            android:layout_height="45dp"
+            app:layout_constraintEnd_toStartOf="@+id/onlineMenu_back_btn"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginBottom="30dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+    />
+
+    <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/onlineMenu_back_btn"
+            android:text="@string/back_btn"
+            android:onClick="onClick"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:background="@mipmap/menu_btn_white"
+            android:layout_width="150dp"
+            android:layout_height="45dp"
+            app:layout_constraintStart_toEndOf="@+id/onlineMenu_play_btn"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="30dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+    />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,7 @@
 package server;
 
 import com.shared.events.*;
+import com.shared.events.Event;
 import game.OnlineGame;
 import com.shared.game.Preferences;
 import game.OnlinePlayer;
@@ -10,37 +11,37 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
-import java.net.SocketTimeoutException;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
 
 public class Server {
+    //TODO client exit won't close connection with server
+    //TODO move is always relative to first player
     private final int port = 8080;
     private Socket socket;
     private ServerSocket serverSocket;
     private List<OnlineGame> games;
-    private int gameIdCounter;
+    private final int gameIdCounter;
+    private boolean serverRunning;
     private final ServerGUI serverGUI;
 
     public Server() {
-        this.games = new LinkedList<>();
+        this.games = new ArrayList<>();
         this.gameIdCounter = 0;
-
-        this.serverGUI = new ServerGUI();
+        this.serverRunning = true;
+        this.serverGUI = new ServerGUI(this);
         startServer();
     }
 
     public void startServer() {
-        serverGUI.appendLog("hello!");
+        sendLog("INFO", "Server is starting...");
 
         try (ServerSocket serverSocket = new ServerSocket(port)) {
-            System.out.println("Server started on port " + port);
+            sendLog("INFO", String.format("Server has started on port %d", port));
 
-            while (true) {
+            while (serverRunning) {
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("New client connected: " + clientSocket);
+                sendLog("INFO", String.format("(%s) has connected to the server", clientSocket.getInetAddress()));
 
                 ObjectInputStream input = new ObjectInputStream(clientSocket.getInputStream());
                 ObjectOutputStream output = new ObjectOutputStream(clientSocket.getOutputStream());
@@ -51,35 +52,47 @@ public class Server {
                 //Tell client server is trying to find or create a game for client
                 sendEvent(output, new GameJoiningEvent());
 
-                OnlineGame game = findOrCreateGame(preferences); //TODO Change code when finding a private game
-                System.out.printf("Game found or created. Games: %d%n", games.size());
+                OnlineGame game = findOrCreateGame(preferences);
                 if (game == null) {
 
                     //Tell client there is no private game with such game room code
                     sendEvent(output, new GameInvalidEvent());
 
                     System.out.println("No such private game - null returned");
+                    sendLog("INFO", String.format("(%s) requested an invalid game, abort.", clientSocket.getInetAddress()));
                     clientSocket.close();
                     continue;
                 }
+                System.out.printf("Game found or created. Games: %d%n", games.size());
 
-                OnlinePlayer player = new OnlinePlayer(game, preferences.nick, output, clientSocket);
+                OnlinePlayer player = new OnlinePlayer(game, preferences.nick, output, input, clientSocket);
+                player.setSnakeColor(preferences.snakeColor);
                 game.addPlayer(player);
+                serverGUI.updateGames(games);
+                System.out.println("Game " + getGames().size() + ". Players: " + game.getPlayers().size());
+                sendEvent(output, new GameInfoEvent(game.getGameRoom()));
 
                 ClientHandler clientHandler = new ClientHandler(clientSocket, input, output, player);
                 Thread clientThread = new Thread(clientHandler);
                 clientThread.start();
 
+                sendLog("INFO", String.format("(%s) %s has joined the game %d.",
+                        player.getSocket().getInetAddress(),
+                        player.getNick(),
+                        game.getGameId()));
             }
         } catch (IOException e) {
             System.out.println("IOException in main server loop");
+            sendLog("ERROR", "IOException in main server loop");
         } catch (ClassNotFoundException e) {
             System.out.println("ClassNotFoundException");
+            sendLog("ERROR", "ClassNotFoundException in main server loop");
         }
     }
 
     public void stopServer() {
-        // TODO stop when GUI is closed
+        serverRunning = false;
+        System.exit(0);
     }
 
     private void sendEvent(ObjectOutputStream out, Event event) {
@@ -92,39 +105,48 @@ public class Server {
     }
 
     private OnlineGame findOrCreateGame(Preferences preferences) {
-        for (OnlineGame g : games) {
-            if (canJoin(g, preferences)) {
-                return g;
+        if (preferences.gameMode != 3) {
+            for (OnlineGame game : games) {
+                if (game.isInSession()) continue;
+
+                if (preferences.gameMode == 0) { //Find any game
+                    if (!game.getCurrentSettings().isPrivate) {
+                        return game;
+                    }
+                    continue;
+                } else if (preferences.gameMode == 1) { //Find game matching client's preferences
+                    if (!game.getCurrentSettings().isPrivate && preferencesMatch(game, preferences)) {
+                        return game;
+                    }
+                } else if (preferences.gameMode == 2) { //Find private game
+                    if (game.getCurrentSettings().isPrivate && game.getGameRoom().equals(preferences.gameRoom)) {
+                        return game;
+                    }
+                }
             }
+            //If private game is not found
+            if (preferences.gameMode == 2) return null;
         }
 
-        System.out.println("Game created");
         OnlineGame game = new OnlineGame(preferences, this);
         games.add(game);
+        System.out.println("Game created");
+        sendLog("INFO", String.format("Game %d has been created.", game.getGameId()));
+
         return game;
     }
 
-    private boolean canJoin(OnlineGame g, Preferences gs) {
-        if (g.isInSession()) {
-            System.out.println("Already in session");
-            return false;
-        }
-
-        //TODO CREATE A SEPARATE MESSAGE WHEN A GAME IS FULL
-        if (g.getCurrentSettings().fieldWith != gs.fieldWith ||
-                g.getCurrentSettings().fieldHeight != gs.fieldHeight ||
-                g.getCurrentSettings().isPortalWalls != gs.isPortalWalls ||
-                g.getCurrentSettings().isCorpse != gs.isCorpse ||
-                g.getCurrentSettings().playersNum != gs.playersNum ||
-                g.getPlayers().size() >= g.getCurrentSettings().playersNum ||
-                g.getCurrentSettings().isPrivate != gs.isPrivate) {
-            System.out.println("settings don't match");
-            return false;
-        }
-
-        if (gs.isPrivate && !gs.gameRoom.equals(g.getCurrentSettings().gameRoom)) {
-            return false;
-        }
+    private boolean preferencesMatch(OnlineGame g, Preferences gs) {
+            if (g.getCurrentSettings().fieldWith != gs.fieldWith ||
+                    g.getCurrentSettings().fieldHeight != gs.fieldHeight ||
+                    g.getCurrentSettings().isPortalWalls != gs.isPortalWalls ||
+                    g.getCurrentSettings().isCorpse != gs.isCorpse ||
+                    g.getCurrentSettings().playersNum != gs.playersNum ||
+                    g.getPlayers().size() >= g.getCurrentSettings().playersNum ||
+                    g.getCurrentSettings().isPrivate != gs.isPrivate) {
+                System.out.println("settings don't match");
+                return false;
+            }
 
         System.out.println("game found");
         return true;
@@ -133,6 +155,12 @@ public class Server {
     public void removeGame(OnlineGame game) {
         this.games.remove(game);
         System.out.printf("Game removed. Games: %d%n", games.size());
+        sendLog("INFO", String.format("Game %d has been destroyed.", game.getGameId()));
+        serverGUI.updateGames(games);
+    }
+
+    public void sendLog(String logType, String logMessage) {
+        serverGUI.appendLog(String.format(" [%s] %s", logType, logMessage));
     }
 
     public List<OnlineGame> getGames() {
@@ -148,14 +176,16 @@ public class Server {
     }
 
 
-
-
     public static class ClientHandler implements Runnable {
         private final Socket socket;
         private final ObjectInputStream inputStream;
         private final ObjectOutputStream outputStream;
         private final OnlinePlayer player;
         private final OnlineGame game;
+        private Timer responseTimer;
+        private Timer moveTimer;
+        private volatile boolean running;
+        private volatile boolean moveTimerCanceled;
 
         public ClientHandler(Socket socket, ObjectInputStream inputStream, ObjectOutputStream outputStream, OnlinePlayer player) {
             this.socket = socket;
@@ -163,88 +193,101 @@ public class Server {
             this.outputStream = outputStream;
             this.player = player;
             this.game = (OnlineGame) player.getAssignedGame();
+            this.responseTimer = new Timer();
+            this.moveTimer = new Timer();
+            this.running = true;
+            this.moveTimerCanceled = true;
         }
+
         @Override
         public void run() {
-            System.out.println("Thread started successfully for " + player.getName());
-            while (true) {
-                try {
-                    Object receivedObject = null;
-                    if (player.getPlayerNum() == game.getCurrentTurn() && game.isInSession()) {
-                        socket.setSoTimeout(60000);
+            System.out.println("Thread started successfully for " + player.getNick());
 
-                        receivedObject = inputStream.readObject();
-
-                        if (receivedObject == null) {
-                            System.out.println("No object sent from active player");
-                            break;
-                        } else if (receivedObject instanceof PlayerMovedGameEvent) {
-                            System.out.println("Received PlayerMovedGameEvent");
-                            PlayerMovedGameEvent event = (PlayerMovedGameEvent) receivedObject;
-                            if (game.isLegalMove(event, player)) {
-                                PlayerMoveBroadcastGameEvent pmbge = game.createSpriteDisplayInfo(event, player);
-                                player.addMoveHistory(event.getMove());
-                                player.removeBoosts();
-                                game.broadcast(pmbge);
-                                game.nextPlayer();
-                            } else {
-                                System.out.println("Illegal move! Player: " + player.getName());
-                                System.out.println("Player head: " + Arrays.toString(player.getSnakeHead()));
-                                System.out.println("Attempted move: " + Arrays.toString(event.getMove()));
-                                break;
+            while (running) {
+                if (player.getPlayerNum() == game.getCurrentTurn() && game.isInSession() && moveTimerCanceled) {
+                    try {
+                        moveTimer.schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                running = false;
+                                game.handleDisconnect(player);
                             }
-                        } else if (receivedObject instanceof PlayerTimeoutGameEvent) {
-                            System.out.println("Client told us the player didn't make a move in time");
-                            break;
-                        } else {
-                            System.out.println("Wrong object sent");
-                            //TODO do something if client provided a wrong object
-                        }
-                    } else if (player.getPlayerNum() != game.getCurrentTurn()) {
-                        socket.setSoTimeout(10000);
-
-                        receivedObject = inputStream.readObject();
-
-                        if (receivedObject == null) {
-                            System.out.println("No object sent from inactive player");
-                            break;
-                        } else if (receivedObject instanceof PlayerResponseEvent) {
-                            System.out.println("Received PlayerResponseEvent from " + player.getName());
-                        } else {
-                            System.out.println("Wrong object from inactive client");
-                        }
+                        }, 60000);
+                        moveTimerCanceled = false;
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                } catch (SocketTimeoutException e) {
-                    System.err.println("Timeout: No data received from client.");
-                    break;
+                }
+
+                try {
+                    responseTimer.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            running = false;
+                            game.handleDisconnect(player);
+                        }
+                    }, 11000);
+
+                } catch (Exception e) {}
+
+                if (!running) break;
+
+                try {
+                    java.lang.Object receivedObject = inputStream.readObject();
+
+                    if (receivedObject == null) {
+                        System.out.println("No object sent from active player");
+                        game.handleDisconnect(player);
+                        break;
+                    } else if (receivedObject instanceof PlayerMovedGameEvent) {
+                        System.out.println("Received PlayerMovedGameEvent from " + player.getNick());
+                        moveTimer.cancel();
+                        PlayerMovedGameEvent event = (PlayerMovedGameEvent) receivedObject;
+                        if (game.isLegalMove(event, player)) {
+                            PlayerMoveBroadcastGameEvent pmbge = game.createSpriteDisplayInfo(event, player);
+                            player.addMoveHistory(event.getMove());
+                            player.removeBoosts();
+                            game.broadcast(pmbge);
+                            game.handleNextTurn();
+                        } else {
+                            System.out.println("Illegal move! Player: " + player.getNick());
+                            System.out.println("Player head: " + Arrays.toString(player.getSnakeHead()));
+                            System.out.println("Attempted move: " + Arrays.toString(event.getMove()));
+                            game.handleDisconnect(player);
+                            break;
+                        }
+                    } else if (receivedObject instanceof PlayerResponseEvent) {
+                        System.out.println("Received PlayerResponseEvent from " + player.getNick());
+                        try {
+                            responseTimer.cancel();
+                        } catch (Exception e) {}
+                    } else {
+                        System.out.println("Wrong object from client");
+                        game.handleDisconnect(player);
+                        break;
+                    }
                 } catch (IOException e) {
+                    moveTimer.cancel();
+                    responseTimer.cancel();
                     System.err.println("IOException");
+                    game.sendLog("WARNING", String.format("IOException for (%s) %s.", player.getSocket().getInetAddress(), player.getNick()));
                     if (e instanceof EOFException) {
                         System.err.println("EOF: Client closed the connection.");
+                        game.sendLog("WARNING", String.format("EOFException for (%s) %s. Client closed the connection.", player.getSocket().getInetAddress(), player.getNick()));
                     } else if (e instanceof SocketException) {
                         System.err.println("SocketException: Connection reset");
+                        game.sendLog("WARNING", String.format("SocketException for (%s) %s. Connection reset.", player.getSocket().getInetAddress(), player.getNick()));
                     } else {
-                        System.err.println(e);
+                        game.sendLog("ERROR", String.format("%s for (%s) %s. Connection reset.", e.getMessage(), player.getSocket().getInetAddress(), player.getNick()));
                     }
+                    game.handleDisconnect(player);
                     break;
                 } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
+                    game.sendLog("ERROR", String.format("ClassNotFoundException for (%s) %s. Class was not found", player.getSocket().getInetAddress(), player.getNick()));
                 }
             }
-
-            System.out.println("Broke from while loop");
-            try {
-                socket.close();
-                outputStream.close();
-                inputStream.close();
-                System.out.println("socket and streams closed");
-                game.processDisconnect(player);
-            } catch (IOException e) {
-                System.out.println("couldn't close socket or streams");
-                // Handle exception
-            } finally {
-                System.out.println("done");
-            }
+            running = false;
+            System.out.println("exited while loop");
         }
     }
 }

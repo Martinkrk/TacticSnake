@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -7,8 +8,8 @@
         app:layout_constraintEnd_toEndOf="@id/parent_layout"
         app:layout_constraintStart_toStartOf="@id/parent_layout"
         app:layout_constraintTop_toTopOf="@id/parent_layout"
-        android:layout_marginTop="100dp" android:layout_marginStart="0dp" android:layout_marginEnd="0dp"
-        android:layout_marginBottom="20dp" android:id="@+id/hotseat_play_menu">
+        android:layout_marginTop="200dp" android:layout_marginStart="0dp" android:layout_marginEnd="0dp"
+        android:layout_marginBottom="20dp" android:id="@+id/play_hotseat_menu">
 
     <LinearLayout
             android:layout_width="200dp"
@@ -17,7 +18,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginBottom="60dp"
-            app:layout_constraintBottom_toTopOf="@+id/hotseat_play">
+            app:layout_constraintBottom_toTopOf="@+id/mainMenu_hotseat_game_btn">
 
     <!-- Zero row of buttons -->
     <LinearLayout
@@ -265,28 +266,28 @@
     </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/hotseat_play"
+            android:id="@+id/mainMenu_hotseat_game_btn"
             android:text="@string/play_btn"
             android:onClick="onClick"
             android:textSize="16sp"
             android:textColor="@color/white"
             android:background="@drawable/menu_btn_bg"
             android:layout_width="200dp"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/button_height"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginBottom="30dp"
-            app:layout_constraintBottom_toTopOf="@+id/hotseat_back_btn"/>
+            app:layout_constraintBottom_toTopOf="@+id/mainMenu_hotseat_back_btn"/>
 
     <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/hotseat_back_btn"
+            android:id="@+id/mainMenu_hotseat_back_btn"
             android:text="@string/back_btn"
             android:onClick="onClick"
             android:textSize="16sp"
             android:textColor="@color/white"
             android:background="@drawable/menu_btn_bg"
             android:layout_width="200dp"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/button_height"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginBottom="30dp"
