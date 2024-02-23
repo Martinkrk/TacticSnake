@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/drawable-v24/loading_animation.xml" value="0.2325" />
+        <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/drawable/border.xml" value="0.159" />
         <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/drawable/cancel_btn_bg.xml" value="0.187" />
         <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/drawable/custom_seekbar.xml" value="0.1995" />
         <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/drawable/custom_seekbar_progress.xml" value="0.1" />
@@ -20,10 +21,12 @@
         <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/drawable/ic_menu.xml" value="0.188" />
         <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/drawable/ic_outline_settings_24.xml" value="0.1" />
         <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/drawable/ic_settings.xml" value="0.1" />
+        <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/drawable/ic_sound_off.xml" value="0.2425" />
         <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/drawable/loading_animation.xml" value="0.1" />
         <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/drawable/loading_bg.xml" value="0.1" />
         <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/drawable/menu_btn_bg.xml" value="0.1855" />
         <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/drawable/menu_item_bg.xml" value="0.2215" />
+        <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/drawable/turn_timer.xml" value="0.3255" />
         <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/layout/activity_game.xml" value="0.25" />
         <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/layout/activity_loading.xml" value="0.1" />
         <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/layout/activity_main.xml" value="0.22" />
@@ -37,7 +40,7 @@
         <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/layout/play_offline_menu.xml" value="0.3614583333333333" />
         <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/layout/play_online_layout.xml" value="0.3614583333333333" />
         <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/layout/play_online_menu.xml" value="0.1" />
-        <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/layout/preferences_menu.xml" value="0.1755464480874317" />
+        <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/layout/preferences_menu.xml" value="0.16" />
         <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/layout/settings_menu.xml" value="0.2" />
         <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/menu/animated_loading_menu.xml" value="0.20625" />
         <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/menu/game_menu.xml" value="0.2859375" />

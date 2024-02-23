@@ -1,7 +1,6 @@
 package com.shared.game;
 
 import com.shared.events.*;
-import com.shared.events.Event;
 import com.shared.player.BotLogic;
 import com.shared.player.Snake;
 
@@ -12,7 +11,7 @@ import java.util.List;
 
 public abstract class Game implements Serializable {
     private int currentTurn;
-    private Preferences currentSettings;
+    private GameSettings currentSettings;
     private List<Snake> players;
     private List<List<Integer>> tiles;
     private boolean gameOver;
@@ -26,15 +25,15 @@ public abstract class Game implements Serializable {
     private static final int[][] movesJump = new int[][] {{-2, 0}, {2, 0}, {0, -2}, {0, 2}};
     private static final int[][] movesKnight = new int[][] {{1, 2}, {2, 1}, {1, -2}, {2, -1}, {-1, 2}, {-2, 1}, {-1, -2}, {-2, -1}};
 
-    public Game(Preferences currentSettings) {
+    public Game(GameSettings currentSettings) {
         this.currentSettings = currentSettings;
         this.players = new ArrayList<>();
         this.currentTurn = -1;
         this.tiles = new ArrayList<>();
         fillTiles();
         this.gameOver = false;
-        startingPos = new int[][] {{0, 0, 90}, {currentSettings.fieldWith-1, currentSettings.fieldHeight-1, 270},
-                {currentSettings.fieldWith-1, 0, 180}, {0, currentSettings.fieldHeight-1, 0}};
+        startingPos = new int[][] {{0, 0, 90}, {currentSettings.fieldWidth -1, currentSettings.fieldHeight-1, 270},
+                {currentSettings.fieldWidth -1, 0, 180}, {0, currentSettings.fieldHeight-1, 0}};
     }
 
     public boolean arePossibleMoves(Snake player) {
@@ -60,7 +59,7 @@ public abstract class Game implements Serializable {
 
     private boolean checkLegalInBounds(int x, int y, int[][] moves) {
         for (int[] move : moves) {
-            if (x + move[0] >= 0 && x + move[0] < getCurrentSettings().fieldWith &&
+            if (x + move[0] >= 0 && x + move[0] < getCurrentSettings().fieldWidth &&
                     y + move[1] >= 0 && y + move[1] < getCurrentSettings().fieldHeight) {
                 if (getTiles().get(x + move[0]).get(y + move[1]) == 0) {
                     return true;
@@ -74,7 +73,7 @@ public abstract class Game implements Serializable {
         int eX = moves[0];
         int eY = moves[1];
         if (!this.getCurrentSettings().isPortalWalls &&
-                (eX > this.getCurrentSettings().fieldWith-1 || eX < 0 ||
+                (eX > this.getCurrentSettings().fieldWidth -1 || eX < 0 ||
                         eY > this.getCurrentSettings().fieldHeight-1 || eY < 0)) {
             return true;
         }
@@ -271,7 +270,7 @@ public abstract class Game implements Serializable {
     }
 
     public void fillTiles() {
-        for (int i = 0; i < getCurrentSettings().fieldWith; i++) {
+        for (int i = 0; i < getCurrentSettings().fieldWidth; i++) {
             List<Integer> innerList = new ArrayList<Integer>();
             for (int j = 0; j < getCurrentSettings().fieldHeight; j++) {
                 innerList.add(0); // add a default value of 0
@@ -321,11 +320,11 @@ public abstract class Game implements Serializable {
         this.currentTurn = currentTurn;
     }
 
-    public Preferences getCurrentSettings() {
+    public GameSettings getCurrentSettings() {
         return currentSettings;
     }
 
-    public void setCurrentSettings(Preferences currentSettings) {
+    public void setCurrentSettings(GameSettings currentSettings) {
         this.currentSettings = currentSettings;
     }
 

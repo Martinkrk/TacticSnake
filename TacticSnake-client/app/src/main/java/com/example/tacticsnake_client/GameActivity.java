@@ -9,25 +9,18 @@ import android.util.Log;
 import android.view.*;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
-import android.widget.TextView;
+import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.core.content.ContextCompat;
 import com.example.tacticsnake_client.events.EventManager;
 import com.example.tacticsnake_client.events.HotseatEventManager;
-import com.example.tacticsnake_client.events.OnlineEventManager;
 import com.example.tacticsnake_client.singleton.AppSingleton;
-import com.shared.events.GameEnteredEvent;
 import com.shared.events.GameInitiatedEvent;
 import com.shared.events.PlayerMoveBroadcastGameEvent;
-import com.shared.events.PlayerMovedGameEvent;
-import com.shared.game.Preferences;
+import com.shared.game.GameSettings;
 import com.shared.player.PlayerInfo;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -44,6 +37,9 @@ public class GameActivity extends AppCompatActivity {
     private int jumpState;
     private BoardView boardView;
     private long mLastClickTime = 0;
+    // Player elements
+    private LinearLayout player1_bar, player2_bar, player3_bar, player4_bar;
+    private ProgressBar avatar1_progressBar, avatar2_progressBar, avatar3_progressBar, avatar4_progressBar;
 
 
     @Override
@@ -57,6 +53,7 @@ public class GameActivity extends AppCompatActivity {
         }
         catch (NullPointerException e){}
 
+        //EventManager
         try {
             eventManager = (EventManager) getIntent().getExtras().getSerializable("eventManager");
         } catch (NullPointerException e) {
@@ -67,17 +64,14 @@ public class GameActivity extends AppCompatActivity {
         }
 
         if (eventManager == null) {
-            eventManager = new HotseatEventManager(new Preferences(), new HotseatGame(new Preferences()));
+            eventManager = new HotseatEventManager(new GameSettings(), new HotseatGame(new GameSettings()));
         }
 
         eventManager.setGameActivity(this);
 
-//        game_eventScroll = findViewById(R.id.game_eventScroll);
-//        game_eventLog = findViewById(R.id.game_eventLog);
-
         //Boardview
         boardView = findViewById(R.id.board_view);
-        boardView.setBoardSize(eventManager.getPreferences().fieldHeight, eventManager.getPreferences().fieldWith);
+        boardView.setBoardSize(eventManager.getPreferences().fieldHeight, eventManager.getPreferences().fieldWidth);
 
 //        diagonalBooster = findViewById(R.id.diagonalbooster);
 //        jumpBooster = findViewById(R.id.jumpbooster);
@@ -96,6 +90,22 @@ public class GameActivity extends AppCompatActivity {
         layoutParams.height = boardSize;
 
         boardView.setLayoutParams(layoutParams);
+
+        //Player bars
+        player1_bar = findViewById(R.id.player1_bar);
+        player2_bar = findViewById(R.id.player2_bar);
+        player3_bar = findViewById(R.id.player3_bar);
+        player4_bar = findViewById(R.id.player4_bar);
+
+        //Turn Timers
+        avatar1_progressBar = findViewById(R.id.avatar1_progressBar);
+        avatar2_progressBar = findViewById(R.id.avatar2_progressBar);
+        avatar3_progressBar = findViewById(R.id.avatar3_progressBar);
+        avatar4_progressBar = findViewById(R.id.avatar4_progressBar);
+        avatar1_progressBar.setVisibility(View.VISIBLE);
+        avatar2_progressBar.setVisibility(View.INVISIBLE);
+        avatar3_progressBar.setVisibility(View.INVISIBLE);
+        avatar4_progressBar.setVisibility(View.INVISIBLE);
 
         //setup game, board, players
         eventManager.setup();
@@ -241,13 +251,11 @@ public class GameActivity extends AppCompatActivity {
         boardView.changeMoveBtnStyle();
     }
 
-    @SuppressLint("UseCompatLoadingForDrawables")
     private void disableBoosterButton(Button boosterButton) {
         boosterButton.setEnabled(false);
         boosterButton.setBackground(getResources().getDrawable(R.drawable.game_booster_button_disabled_bg));
     }
 
-    @SuppressLint("UseCompatLoadingForDrawables")
     public void setMoveBtnState(boolean active) {
         makeamove.setEnabled(active);
         if (active) makeamove.setBackground(getResources().getDrawable(R.drawable.game_move_btn_bg));
@@ -271,6 +279,10 @@ public class GameActivity extends AppCompatActivity {
     public void removeSnake(List<int[]> moves, int headRotation, int[] snakeColor, int snakeBuried) {
         boardView.placeDeadHead(moves.get(0), headRotation, snakeColor, snakeBuried);
         boardView.removeSnake(moves);
+    }
+
+    public void updatePlayerTurnTimer(int player) {
+
     }
 
     public void cancelGame(String errorTitle, String errorDesc) {

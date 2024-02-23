@@ -2,7 +2,7 @@ package com.example.tacticsnake_client;
 
 import android.util.Log;
 import com.shared.game.Game;
-import com.shared.game.Preferences;
+import com.shared.game.GameSettings;
 import com.shared.player.PlayerInfo;
 import com.shared.player.Snake;
 
@@ -12,7 +12,7 @@ import java.util.List;
 
 public class HotseatGame extends Game {
     private final int[][] snakeColors = new int[][] {{255, 0, 0}, {0, 255, 0}, {0, 0, 255}, {255, 255, 0}};
-    public HotseatGame(Preferences currentSettings) {
+    public HotseatGame(GameSettings currentSettings) {
         super(currentSettings);
     }
 

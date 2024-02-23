@@ -2,19 +2,19 @@ package com.example.tacticsnake_client.events;
 
 import com.example.tacticsnake_client.GameActivity;
 import com.shared.events.*;
-import com.shared.game.Preferences;
+import com.shared.game.GameSettings;
 
 import java.io.Serializable;
 
 public abstract class EventManager implements Serializable {
     protected GameActivity gameActivity;
-    private Preferences preferences;
+    private GameSettings gameSettings;
     private int playerNum;
 
     abstract public void sendEvent(Event event);
     public void handleObject(Object object) {
-        if (object instanceof Preferences) {
-            setPreferences((Preferences)object);
+        if (object instanceof GameSettings) {
+            setPreferences((GameSettings)object);
         } else if (object instanceof GameJoiningEvent) {
             handleGameJoiningEvent((GameJoiningEvent) object);
         } else if (object instanceof GameInvalidEvent) {
@@ -67,12 +67,12 @@ public abstract class EventManager implements Serializable {
         this.gameActivity = gameActivity;
     }
 
-    public Preferences getPreferences() {
-        return preferences;
+    public GameSettings getPreferences() {
+        return gameSettings;
     }
 
-    public void setPreferences(Preferences preferences) {
-        this.preferences = preferences;
+    public void setPreferences(GameSettings gameSettings) {
+        this.gameSettings = gameSettings;
     }
 
     public int getPlayerNum() {

@@ -1,10 +1,9 @@
 package com.example.tacticsnake_client.events;
 
-import android.util.Log;
 import com.example.tacticsnake_client.LoadingActivity;
 import com.example.tacticsnake_client.network.Network;
 import com.shared.events.*;
-import com.shared.game.Preferences;
+import com.shared.game.GameSettings;
 
 import java.util.Locale;
 
@@ -12,8 +11,8 @@ public class OnlineEventManager extends EventManager{
     private Network network;
     private LoadingActivity loadingActivity;
 
-    public OnlineEventManager(LoadingActivity loadingActivity, Preferences preferences) {
-        this.setPreferences(preferences);
+    public OnlineEventManager(LoadingActivity loadingActivity, GameSettings gameSettings) {
+        this.setPreferences(gameSettings);
         this.network = new Network(this);
         this.loadingActivity = loadingActivity;
     }

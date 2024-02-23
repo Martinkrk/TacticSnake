@@ -3,20 +3,17 @@ package com.example.tacticsnake_client;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import com.example.tacticsnake_client.events.OnlineEventManager;
 import com.example.tacticsnake_client.singleton.AppSingleton;
 import com.shared.events.GameInitiatedEvent;
-import com.shared.game.Preferences;
+import com.shared.game.GameSettings;
 
 public class LoadingActivity extends AppCompatActivity {
     OnlineEventManager eventManager;
@@ -52,7 +49,7 @@ public class LoadingActivity extends AppCompatActivity {
         //Preferences
 
         //Event manager
-        eventManager = new OnlineEventManager(this, (Preferences) getIntent().getExtras().getSerializable("preferences"));
+        eventManager = new OnlineEventManager(this, (GameSettings) getIntent().getExtras().getSerializable("preferences"));
     }
 
     @Override

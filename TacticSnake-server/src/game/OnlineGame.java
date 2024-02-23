@@ -3,7 +3,7 @@ package game;
 import com.shared.events.*;
 import com.shared.events.Event;
 import com.shared.game.Game;
-import com.shared.game.Preferences;
+import com.shared.game.GameSettings;
 import com.shared.player.BotLogic;
 import com.shared.player.PlayerInfo;
 import com.shared.player.Snake;
@@ -24,7 +24,7 @@ public class OnlineGame extends Game {
     private final String gameRoom; //By invitation: random HEX string, random game: empty string
     private boolean inSession;
 
-    public OnlineGame(Preferences currentSettings, Server server) {
+    public OnlineGame(GameSettings currentSettings, Server server) {
         super(currentSettings);
         this.server = server;
         this.gameId = GameIdGenerator.getNextId();

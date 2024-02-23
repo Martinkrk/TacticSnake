@@ -2,9 +2,8 @@ package com.example.tacticsnake_client.network;
 
 import android.util.Log;
 import com.example.tacticsnake_client.events.OnlineEventManager;
-import com.shared.events.Event;
 import com.shared.events.PlayerResponseEvent;
-import com.shared.game.Preferences;
+import com.shared.game.GameSettings;
 
 import java.io.*;
 import java.net.*;
@@ -50,9 +49,9 @@ public class Network {
         }
     }
 
-    private void sendPreferences(Preferences preferences) {
+    private void sendPreferences(GameSettings gameSettings) {
         try {
-            out.writeObject(preferences);
+            out.writeObject(gameSettings);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

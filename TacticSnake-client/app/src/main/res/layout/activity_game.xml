@@ -93,12 +93,42 @@
                         android:textSize="14sp"
                 />
 
-                <ImageView
+                <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/avatar1"
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:background="@mipmap/avatar"
-                />
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                    >
+
+                    <ImageView
+                            android:id="@+id/avatar1_photo"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:background="@mipmap/avatar"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                    />
+
+                    <ProgressBar
+                            android:id="@+id/avatar1_progressBar"
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_centerInParent="true"
+                            android:indeterminate="false"
+                            android:max="60"
+                            android:progress="60"
+                            android:rotation="90"
+                            android:progressDrawable="@drawable/turn_timer"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                    />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
 
             </LinearLayout>
 
@@ -130,12 +160,41 @@
                         android:textSize="14sp"
                 />
 
-                <ImageView
+                <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/avatar3"
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:background="@mipmap/avatar"
-                />
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                >
+
+                    <ImageView
+                            android:id="@+id/avatar3_photo"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:background="@mipmap/avatar"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                    />
+
+                    <ProgressBar
+                            android:id="@+id/avatar3_progressBar"
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_centerInParent="true"
+                            android:indeterminate="false"
+                            android:max="60"
+                            android:progress="60"
+                            android:rotation="90"
+                            android:progressDrawable="@drawable/turn_timer"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                    />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </LinearLayout>
 
@@ -183,12 +242,41 @@
                     android:gravity="center"
             >
 
-                <ImageView
+                <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/avatar4"
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:background="@mipmap/avatar"
-                />
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                >
+
+                    <ImageView
+                            android:id="@+id/avatar4_photo"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:background="@mipmap/avatar"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                    />
+
+                    <ProgressBar
+                            android:id="@+id/avatar4_progressBar"
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_centerInParent="true"
+                            android:indeterminate="false"
+                            android:max="60"
+                            android:progress="60"
+                            android:rotation="90"
+                            android:progressDrawable="@drawable/turn_timer"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                    />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <TextView
                         android:id="@+id/name4"
@@ -220,12 +308,41 @@
                     android:orientation="vertical"
                     android:gravity="center">
 
-                <ImageView
+                <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/avatar2"
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:background="@mipmap/avatar"
-                />
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                >
+
+                    <ImageView
+                            android:id="@+id/avatar2_photo"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:background="@mipmap/avatar"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                    />
+
+                    <ProgressBar
+                            android:id="@+id/avatar2_progressBar"
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_centerInParent="true"
+                            android:indeterminate="false"
+                            android:max="60"
+                            android:progress="60"
+                            android:rotation="90"
+                            android:progressDrawable="@drawable/turn_timer"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                    />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <TextView
                         android:id="@+id/name2"

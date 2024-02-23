@@ -2,6 +2,7 @@ package com.example.tacticsnake_client.singleton;
 
 import com.example.tacticsnake_client.events.OnlineEventManager;
 
+// No thread safety, we ball
 public class AppSingleton {
     private static AppSingleton instance;
     private OnlineEventManager onlineEventManager;

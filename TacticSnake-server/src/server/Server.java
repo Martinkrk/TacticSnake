@@ -3,7 +3,7 @@ package server;
 import com.shared.events.*;
 import com.shared.events.Event;
 import game.OnlineGame;
-import com.shared.game.Preferences;
+import com.shared.game.GameSettings;
 import game.OnlinePlayer;
 import gui.ServerGUI;
 
@@ -14,8 +14,8 @@ import java.net.SocketException;
 import java.util.*;
 
 public class Server {
-    //TODO client exit won't close connection with server
-    //TODO move is always relative to first player
+    //TODO client exit won't close connection with server -Update fixed?
+    //TODO move is always relative to first player -Update no?
     private final int port = 8080;
     private Socket socket;
     private ServerSocket serverSocket;
@@ -46,13 +46,13 @@ public class Server {
                 ObjectInputStream input = new ObjectInputStream(clientSocket.getInputStream());
                 ObjectOutputStream output = new ObjectOutputStream(clientSocket.getOutputStream());
 
-                Preferences preferences = (Preferences) input.readObject();
-                System.out.println("Received game settings from client: " + preferences);
+                GameSettings gameSettings = (GameSettings) input.readObject();
+                System.out.println("Received game settings from client: " + gameSettings);
 
                 //Tell client server is trying to find or create a game for client
                 sendEvent(output, new GameJoiningEvent());
 
-                OnlineGame game = findOrCreateGame(preferences);
+                OnlineGame game = findOrCreateGame(gameSettings);
                 if (game == null) {
 
                     //Tell client there is no private game with such game room code
@@ -65,8 +65,8 @@ public class Server {
                 }
                 System.out.printf("Game found or created. Games: %d%n", games.size());
 
-                OnlinePlayer player = new OnlinePlayer(game, preferences.nick, output, input, clientSocket);
-                player.setSnakeColor(preferences.snakeColor);
+                OnlinePlayer player = new OnlinePlayer(game, gameSettings.nick, output, input, clientSocket);
+                player.setSnakeColor(gameSettings.snakeColor);
                 game.addPlayer(player);
                 serverGUI.updateGames(games);
                 System.out.println("Game " + getGames().size() + ". Players: " + game.getPlayers().size());
@@ -104,31 +104,30 @@ public class Server {
         }
     }
 
-    private OnlineGame findOrCreateGame(Preferences preferences) {
-        if (preferences.gameMode != 3) {
+    private OnlineGame findOrCreateGame(GameSettings gameSettings) {
+        if (gameSettings.gameMode != 3) {
             for (OnlineGame game : games) {
                 if (game.isInSession()) continue;
 
-                if (preferences.gameMode == 0) { //Find any game
+                if (gameSettings.gameMode == 0) { //Find any game
                     if (!game.getCurrentSettings().isPrivate) {
                         return game;
                     }
-                    continue;
-                } else if (preferences.gameMode == 1) { //Find game matching client's preferences
-                    if (!game.getCurrentSettings().isPrivate && preferencesMatch(game, preferences)) {
+                } else if (gameSettings.gameMode == 1) { //Find game matching client's gameSettings
+                    if (!game.getCurrentSettings().isPrivate && gameSettingsMatch(game, gameSettings)) {
                         return game;
                     }
-                } else if (preferences.gameMode == 2) { //Find private game
-                    if (game.getCurrentSettings().isPrivate && game.getGameRoom().equals(preferences.gameRoom)) {
+                } else if (gameSettings.gameMode == 2) { //Find private game
+                    if (game.getCurrentSettings().isPrivate && game.getGameRoom().equals(gameSettings.gameRoom)) {
                         return game;
                     }
                 }
             }
             //If private game is not found
-            if (preferences.gameMode == 2) return null;
+            if (gameSettings.gameMode == 2) return null;
         }
 
-        OnlineGame game = new OnlineGame(preferences, this);
+        OnlineGame game = new OnlineGame(gameSettings, this);
         games.add(game);
         System.out.println("Game created");
         sendLog("INFO", String.format("Game %d has been created.", game.getGameId()));
@@ -136,8 +135,8 @@ public class Server {
         return game;
     }
 
-    private boolean preferencesMatch(OnlineGame g, Preferences gs) {
-            if (g.getCurrentSettings().fieldWith != gs.fieldWith ||
+    private boolean gameSettingsMatch(OnlineGame g, GameSettings gs) {
+            if (g.getCurrentSettings().fieldWidth != gs.fieldWidth ||
                     g.getCurrentSettings().fieldHeight != gs.fieldHeight ||
                     g.getCurrentSettings().isPortalWalls != gs.isPortalWalls ||
                     g.getCurrentSettings().isCorpse != gs.isCorpse ||

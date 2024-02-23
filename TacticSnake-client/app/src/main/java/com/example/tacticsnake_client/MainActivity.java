@@ -1,15 +1,15 @@
 package com.example.tacticsnake_client;
 
 import android.annotation.SuppressLint;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.SystemClock;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.*;
@@ -18,14 +18,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import com.example.tacticsnake_client.events.EventManager;
 import com.example.tacticsnake_client.events.HotseatEventManager;
-import com.shared.game.Preferences;
+import com.example.tacticsnake_client.preferences.Preferences;
+import com.shared.game.GameSettings;
 
 public class MainActivity extends AppCompatActivity {
     private long mLastClickTime = 0;
     private Preferences preferences;
+    private GameSettings gameSettings;
     private SharedPreferences sharedPreferences;
+    // AUDIO
+    private MediaPlayer mp;
+    private AudioManager am;
+    int maxVolume;
+    int currentVolume;
+    private Button mainMenu_soundToggle;
+    private int mainMenu_soundToggle_state = 1;
 
     ConstraintLayout cl_main_menu;
     ConstraintLayout cl_play_menu;
@@ -55,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
     TextView selMenuText;
 
     //Settings
+    SeekBar settings_volume_seekbar;
+
+    //Game Settings
     SeekBar settings_boardSize_seekbar;
     TextView settings_boardSize_text;
     SeekBar settings_onlinePlayersNumber_seekbar;
@@ -94,30 +105,42 @@ public class MainActivity extends AppCompatActivity {
         //Preferences
         preferences = new Preferences();
         sharedPreferences = getSharedPreferences("preferences", MODE_PRIVATE);
-        if (!sharedPreferences.getBoolean("arePreferences", false)) {
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean("arePreferences", true);
-            editor.putInt("fieldWith", 8);
-            editor.putInt("fieldHeight", 8);
-            editor.putBoolean("isPortalWalls", false);
-            editor.putBoolean("isCorpse", false);
-            editor.putInt("playersNum", 4);
-            editor.putString("nick", "Nameless");
-            editor.putInt("red", 255);
-            editor.putInt("green", 255);
-            editor.putInt("blue", 255);
-            editor.apply();
-        } else {
-            preferences.fieldWith = sharedPreferences.getInt("fieldWith", preferences.fieldWith);
-            preferences.fieldHeight = sharedPreferences.getInt("fieldHeight", preferences.fieldHeight);
-            preferences.isPortalWalls = sharedPreferences.getBoolean("isPortalWalls", preferences.isPortalWalls);
-            preferences.isCorpse = sharedPreferences.getBoolean("isCorpse", preferences.isCorpse);
-            preferences.playersNum = sharedPreferences.getInt("playersNum", preferences.playersNum);
-            preferences.nick = sharedPreferences.getString("nick", preferences.nick);
-            preferences.snakeColor = new int[] {sharedPreferences.getInt("red", 255),
-                    sharedPreferences.getInt("green", 255), sharedPreferences.getInt("blue", 255)};
-        }
+        preferences.initialize(sharedPreferences);
 
+        // AUDIO
+        mp = MediaPlayer.create(this, R.raw.click);
+        am = (AudioManager) getSystemService(AUDIO_SERVICE);
+
+        maxVolume = am.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        currentVolume = am.getStreamVolume(AudioManager.STREAM_MUSIC);
+
+        mainMenu_soundToggle = findViewById(R.id.mainMenu_soundToggle);
+
+        settings_volume_seekbar = findViewById(R.id.settings_volume_seekbar);
+        settings_volume_seekbar.setMax(maxVolume);
+        settings_volume_seekbar.setProgress(currentVolume);
+        settings_volume_seekbar.setOnSeekBarChangeListener(
+                new SeekBar.OnSeekBarChangeListener()
+                {
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {}
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {}
+
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress,
+                                                  boolean fromUser)
+                    {
+                        currentVolume = progress;
+                        if (mainMenu_soundToggle_state != 0) {
+                            am.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, 0);
+                        }
+                    }
+                }
+        );
+
+        // MAIN
         //Main menu category text
         selMenuText = findViewById(R.id.selmenutext);
 
@@ -318,13 +341,16 @@ public class MainActivity extends AppCompatActivity {
         }
         mLastClickTime = SystemClock.elapsedRealtime();
         Intent intent;
+        mp.start();
+
 
         switch (v.getId()) {
                 // MAIN MENU
             case R.id.mainMenu_quickGame:
-                intent = new Intent(this, LoadingActivity.class);
                 preferences.gameMode = 0;
-                intent.putExtra("preferences", preferences);
+                gameSettings = preferences.createGameSettings();
+                intent = new Intent(this, LoadingActivity.class);
+                intent.putExtra("gameSettings", gameSettings);
                 startActivity(intent);
                 break;
 
@@ -383,10 +409,11 @@ public class MainActivity extends AppCompatActivity {
 
                 //FIND GAME MENU
             case R.id.findMenu_find_btn:
-                intent = new Intent(this, LoadingActivity.class);
                 preferences.gameMode = 2;
                 preferences.gameRoom = String.valueOf(mainMenu_find_game_input.getText());
-                intent.putExtra("preferences", preferences);
+                gameSettings = preferences.createGameSettings();
+                intent = new Intent(this, LoadingActivity.class);
+                intent.putExtra("gameSettings", gameSettings);
                 startActivity(intent);
                 break;
 
@@ -399,8 +426,8 @@ public class MainActivity extends AppCompatActivity {
                 //ONLINE GAME MENU
             case R.id.onlineMenu_play_btn:
                 // Preferences class
-                preferences.gameMode = settings_private_switch.isChecked() ? 3 : 1; // TODO place correct values
-                preferences.fieldWith = settings_boardSize_seekbar.getProgress() + boardSizeOffset;
+                preferences.gameMode = settings_private_switch.isChecked() ? 3 : 1;
+                preferences.fieldWidth = settings_boardSize_seekbar.getProgress() + boardSizeOffset;
                 preferences.fieldHeight = settings_boardSize_seekbar.getProgress() + boardSizeOffset;
                 preferences.playersNum = settings_onlinePlayersNumber_seekbar.getProgress() + onlinePlayersNumberOffset;
                 preferences.isCorpse = settings_corpseMode_switch.isChecked();
@@ -408,15 +435,17 @@ public class MainActivity extends AppCompatActivity {
 
                 // Shared Preferences
                 SharedPreferences.Editor settingsEditor = sharedPreferences.edit();
-                settingsEditor.putInt("fieldWith", preferences.fieldWith);
+                settingsEditor.putInt("fieldWith", preferences.fieldWidth);
                 settingsEditor.putInt("fieldHeight", preferences.fieldHeight);
                 settingsEditor.putBoolean("isPortalWalls", preferences.isPortalWalls);
                 settingsEditor.putBoolean("isCorpse", preferences.isCorpse);
                 settingsEditor.putInt("playersNum", preferences.playersNum);
                 settingsEditor.apply();
 
+                gameSettings = preferences.createGameSettings();
+
                 intent = new Intent(this, LoadingActivity.class);
-                intent.putExtra("preferences", preferences);
+                intent.putExtra("gameSettings", gameSettings);
                 startActivity(intent);
                 break;
 
@@ -455,10 +484,26 @@ public class MainActivity extends AppCompatActivity {
                 selMenuText.setText("");
                 break;
 
+                // AUDIO TOGGLE
+            case R.id.mainMenu_soundToggle:
+                mainMenu_soundToggle_state ^= 1;
+                if (mainMenu_soundToggle_state == 0) {
+                    currentVolume = am.getStreamVolume(AudioManager.STREAM_MUSIC);
+                    am.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);
+                    mainMenu_soundToggle.setBackgroundResource(R.mipmap.menu_btn_small_gray);
+                    mainMenu_soundToggle.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_sound_off_black, 0, 0, 0);
+                } else {
+                    am.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, 0);
+                    mainMenu_soundToggle.setBackgroundResource(R.mipmap.menu_btn_small_yellow);
+                    mainMenu_soundToggle.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_sound_on, 0, 0, 0);
+                }
+                break;
+
                 //HOTSEAT GAME MENU
             case R.id.mainMenu_hotseat_game_btn:
+                gameSettings = preferences.createGameSettings();
                 intent = new Intent(this, GameActivity.class);
-                intent.putExtra("eventManager", new HotseatEventManager(preferences, new HotseatGame(preferences)));
+                intent.putExtra("eventManager", new HotseatEventManager(gameSettings, new HotseatGame(gameSettings)));
                 intent.putExtra("players", hotseatPlayers);
                 startActivity(intent);
                 break;

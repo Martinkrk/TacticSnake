@@ -4,17 +4,15 @@ import android.util.Log;
 import com.example.tacticsnake_client.HotseatGame;
 import com.example.tacticsnake_client.OfflinePlayer;
 import com.shared.events.*;
-import com.shared.game.Preferences;
+import com.shared.game.GameSettings;
 import com.shared.player.DumbBot;
 import com.shared.player.Snake;
-
-import java.util.Locale;
 
 public class HotseatEventManager extends EventManager {
     private HotseatGame game;
 
-    public HotseatEventManager(Preferences preferences, HotseatGame game) {
-        this.setPreferences(preferences);
+    public HotseatEventManager(GameSettings gameSettings, HotseatGame game) {
+        this.setPreferences(gameSettings);
         this.game = game;
     }
 
