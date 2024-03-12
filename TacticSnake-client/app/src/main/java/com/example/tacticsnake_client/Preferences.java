@@ -1,11 +1,10 @@
-package com.example.tacticsnake_client.preferences;
+package com.example.tacticsnake_client;
 
 import android.content.SharedPreferences;
 import com.shared.game.GameSettings;
 
 public class Preferences {
     //General settings
-    public int volume;
     public int volume_muted;
     //Game settings
     public int gameMode;
@@ -22,7 +21,6 @@ public class Preferences {
     public int[] snakeColor;
 
     public Preferences() {
-         volume = 0;
          volume_muted = 0;
          gameMode = 0;
          fieldWidth = 8;
@@ -47,6 +45,7 @@ public class Preferences {
     private void initializeDefaultPreferences(SharedPreferences sharedPreferences) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("arePreferences", true);
+        editor.putInt("volume_muted", this.volume_muted);
         editor.putInt("fieldWidth", this.fieldWidth);
         editor.putInt("fieldHeight", this.fieldHeight);
         editor.putBoolean("isPortalWalls", this.isPortalWalls);
@@ -60,6 +59,7 @@ public class Preferences {
     }
 
     private void loadPreferencesFromStorage(SharedPreferences sharedPreferences) {
+        this.volume_muted = sharedPreferences.getInt("volume_muted", this.volume_muted);
         this.fieldWidth = sharedPreferences.getInt("fieldWidth", this.fieldWidth);
         this.fieldHeight = sharedPreferences.getInt("fieldHeight", this.fieldHeight);
         this.isPortalWalls = sharedPreferences.getBoolean("isPortalWalls", this.isPortalWalls);

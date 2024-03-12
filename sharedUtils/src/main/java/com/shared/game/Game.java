@@ -61,7 +61,7 @@ public abstract class Game implements Serializable {
         for (int[] move : moves) {
             if (x + move[0] >= 0 && x + move[0] < getCurrentSettings().fieldWidth &&
                     y + move[1] >= 0 && y + move[1] < getCurrentSettings().fieldHeight) {
-                if (getTiles().get(x + move[0]).get(y + move[1]) == 0) {
+                if (getTiles().get(y + move[1]).get(x + move[0]) == 0) {
                     return true;
                 }
             }
@@ -91,7 +91,7 @@ public abstract class Game implements Serializable {
         }
 
         //Occupied check
-        if (getTiles().get(eX).get(eY) == 1) {
+        if (getTiles().get(eY).get(eX) == 1) {
             return false;
         }
 
@@ -206,13 +206,13 @@ public abstract class Game implements Serializable {
             }
             headDirection = newRotation;
         } else {
-            if (diffY > 0) {
+            if (diffX > 0) {
                 headDirection = 1;
-            } else if (diffY < 0) {
-                headDirection = 3;
-            } else if (diffX > 0) {
-                headDirection = 2;
             } else if (diffX < 0) {
+                headDirection = 3;
+            } else if (diffY > 0) {
+                headDirection = 2;
+            } else if (diffY < 0) {
                 headDirection = 0;
             }
         }
@@ -240,7 +240,8 @@ public abstract class Game implements Serializable {
                     bodySprite = 3;
                 } else if (headDirection - bodyRotation == -1 || headDirection - bodyRotation == 3) {
                     bodySprite = 3;
-                    bodyMirror = 1;
+//                    bodyMirror = 1;
+                    bodyRotation+=1;
                 } else {
                     System.out.println("headD " + headDirection + " bodyR " + bodyRotation);
                 }
@@ -255,18 +256,25 @@ public abstract class Game implements Serializable {
         int[] sprites = new int[] {bodySprite, headSprite};
         int[] rotations = new int[] {bodyRotation*90, headDirection*90};
 
+        for (int op = 0; op < getTiles().size(); op++) {
+            for (int oz = 0; oz < getTiles().get(0).size(); oz++) {
+                System.out.print(getTiles().get(op).get(oz) + " ");
+            }
+            System.out.println();
+        }
+
         PlayerMoveBroadcastGameEvent pmbge = new PlayerMoveBroadcastGameEvent(player.getPlayerNum(), player.getNick(), bodyCoords, event.getMove(), sprites, rotations, bodyMirror, player.getSnakeColor());
         return pmbge;
     }
 
     public void movesRemove(List<int[]> moves) {
         for (int[] move : moves) {
-            tiles.get(move[0]).set(move[1], 0);
+            tiles.get(move[1]).set(move[0], 0);
         }
     }
 
     public void acceptMove(int x, int y) {
-        this.tiles.get(x).set(y, 1);
+        this.tiles.get(y).set(x, 1);
     }
 
     public void fillTiles() {

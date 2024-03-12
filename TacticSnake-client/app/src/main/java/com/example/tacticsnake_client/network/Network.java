@@ -9,8 +9,8 @@ import java.io.*;
 import java.net.*;
 
 public class Network {
-    private final String serverAddress = "2.tcp.eu.ngrok.io";
-    private final int serverPort = 16585;
+    private final String serverAddress = "";
+    private final int serverPort = 0;
     private Socket socket;
     private ObjectOutputStream out;
     private ObjectInputStream in;

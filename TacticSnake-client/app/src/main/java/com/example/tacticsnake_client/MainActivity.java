@@ -6,8 +6,10 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -19,21 +21,19 @@ import android.os.Bundle;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import com.example.tacticsnake_client.events.HotseatEventManager;
-import com.example.tacticsnake_client.preferences.Preferences;
+import com.example.tacticsnake_client.managers.CustomAudioManager;
 import com.shared.game.GameSettings;
 
 public class MainActivity extends AppCompatActivity {
     private long mLastClickTime = 0;
-    private Preferences preferences;
     private GameSettings gameSettings;
+    private Intent intent;
+    private Preferences preferences;
     private SharedPreferences sharedPreferences;
-    // AUDIO
-    private MediaPlayer mp;
-    private AudioManager am;
-    int maxVolume;
-    int currentVolume;
+    private SharedPreferences.Editor preferencesEditor;
+    //AUDIO
+    private CustomAudioManager cam;
     private Button mainMenu_soundToggle;
-    private int mainMenu_soundToggle_state = 1;
 
     ConstraintLayout cl_main_menu;
     ConstraintLayout cl_play_menu;
@@ -108,17 +108,20 @@ public class MainActivity extends AppCompatActivity {
         preferences.initialize(sharedPreferences);
 
         // AUDIO
-        mp = MediaPlayer.create(this, R.raw.click);
-        am = (AudioManager) getSystemService(AUDIO_SERVICE);
-
-        maxVolume = am.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-        currentVolume = am.getStreamVolume(AudioManager.STREAM_MUSIC);
+        cam = new CustomAudioManager(this, (AudioManager) getSystemService(AUDIO_SERVICE));
 
         mainMenu_soundToggle = findViewById(R.id.mainMenu_soundToggle);
-
         settings_volume_seekbar = findViewById(R.id.settings_volume_seekbar);
-        settings_volume_seekbar.setMax(maxVolume);
-        settings_volume_seekbar.setProgress(currentVolume);
+        settings_volume_seekbar.setMax(cam.getMaxVolume());
+
+        //Mute or set volume based on preferences
+        cam.setCurrentVolume(cam.getAm().getStreamVolume(AudioManager.STREAM_MUSIC));
+        if (preferences.volume_muted == 1) {
+            muteSounds();
+        } else {
+            settings_volume_seekbar.setProgress(cam.getCurrentVolume());
+        }
+
         settings_volume_seekbar.setOnSeekBarChangeListener(
                 new SeekBar.OnSeekBarChangeListener()
                 {
@@ -132,13 +135,16 @@ public class MainActivity extends AppCompatActivity {
                     public void onProgressChanged(SeekBar seekBar, int progress,
                                                   boolean fromUser)
                     {
-                        currentVolume = progress;
-                        if (mainMenu_soundToggle_state != 0) {
-                            am.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, 0);
+                        if (preferences.volume_muted == 0) {
+                            cam.setCurrentVolume(progress);
+                            cam.getAm().setStreamVolume(AudioManager.STREAM_MUSIC, cam.getCurrentVolume(), 0);
+                        } else {
+                            cam.setSavedVolume(progress);
                         }
                     }
                 }
         );
+
 
         // MAIN
         //Main menu category text
@@ -340,9 +346,8 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         mLastClickTime = SystemClock.elapsedRealtime();
-        Intent intent;
-        mp.start();
 
+        cam.getSp().play(cam.getSounds().get("click"), 1, 1, 0, 0, 1);
 
         switch (v.getId()) {
                 // MAIN MENU
@@ -434,13 +439,13 @@ public class MainActivity extends AppCompatActivity {
                 preferences.isPortalWalls = settings_portalWallsMode_switch.isChecked();
 
                 // Shared Preferences
-                SharedPreferences.Editor settingsEditor = sharedPreferences.edit();
-                settingsEditor.putInt("fieldWith", preferences.fieldWidth);
-                settingsEditor.putInt("fieldHeight", preferences.fieldHeight);
-                settingsEditor.putBoolean("isPortalWalls", preferences.isPortalWalls);
-                settingsEditor.putBoolean("isCorpse", preferences.isCorpse);
-                settingsEditor.putInt("playersNum", preferences.playersNum);
-                settingsEditor.apply();
+                preferencesEditor = sharedPreferences.edit();
+                preferencesEditor.putInt("fieldWith", preferences.fieldWidth);
+                preferencesEditor.putInt("fieldHeight", preferences.fieldHeight);
+                preferencesEditor.putBoolean("isPortalWalls", preferences.isPortalWalls);
+                preferencesEditor.putBoolean("isCorpse", preferences.isCorpse);
+                preferencesEditor.putInt("playersNum", preferences.playersNum);
+                preferencesEditor.apply();
 
                 gameSettings = preferences.createGameSettings();
 
@@ -465,7 +470,7 @@ public class MainActivity extends AppCompatActivity {
                 preferences.snakeColor = new int[] {red, green, blue};
 
                 // Shared Preferences
-                SharedPreferences.Editor preferencesEditor = sharedPreferences.edit();
+                preferencesEditor = sharedPreferences.edit();
                 preferencesEditor.putString("nick", preferences.nick);
                 preferencesEditor.putInt("red", red);
                 preferencesEditor.putInt("green", green);
@@ -486,17 +491,13 @@ public class MainActivity extends AppCompatActivity {
 
                 // AUDIO TOGGLE
             case R.id.mainMenu_soundToggle:
-                mainMenu_soundToggle_state ^= 1;
-                if (mainMenu_soundToggle_state == 0) {
-                    currentVolume = am.getStreamVolume(AudioManager.STREAM_MUSIC);
-                    am.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);
-                    mainMenu_soundToggle.setBackgroundResource(R.mipmap.menu_btn_small_gray);
-                    mainMenu_soundToggle.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_sound_off_black, 0, 0, 0);
+                preferences.volume_muted ^= 1;
+                if (preferences.volume_muted == 1) {
+                    muteSounds();
                 } else {
-                    am.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, 0);
-                    mainMenu_soundToggle.setBackgroundResource(R.mipmap.menu_btn_small_yellow);
-                    mainMenu_soundToggle.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_sound_on, 0, 0, 0);
+                    unmuteSounds();
                 }
+                updateVolumeMute(preferences.volume_muted);
                 break;
 
                 //HOTSEAT GAME MENU
@@ -580,6 +581,26 @@ public class MainActivity extends AppCompatActivity {
                 hotseatPlayers[3] = 0;
                 break;
         }
+    }
+
+    private void updateVolumeMute(int m) {
+        preferencesEditor = sharedPreferences.edit();
+        preferencesEditor.putInt("volume_muted", m);
+        preferencesEditor.apply();
+    }
+
+    public void muteSounds() {
+        settings_volume_seekbar.setProgress(0);
+        cam.muteSounds();
+        mainMenu_soundToggle.setBackgroundResource(R.mipmap.menu_btn_small_gray);
+        mainMenu_soundToggle.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_sound_off_black, 0, 0, 0);
+    }
+
+    public void unmuteSounds() {
+        settings_volume_seekbar.setProgress(cam.getSavedVolume());
+        cam.unmuteSounds();
+        mainMenu_soundToggle.setBackgroundResource(R.mipmap.menu_btn_small_yellow);
+        mainMenu_soundToggle.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_sound_on, 0, 0, 0);
     }
 
     //HELPERS

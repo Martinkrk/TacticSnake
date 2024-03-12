@@ -10,6 +10,14 @@
         android:background="@mipmap/bg"
         >
 
+    <SeekBar
+            android:id="@+id/game_volume_seekbar"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="invisible"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/top_bar"
             android:layout_width="match_parent"
@@ -41,7 +49,7 @@
                 android:textSize="18sp"
                 android:gravity="center"
                 app:layout_constraintStart_toEndOf="@+id/game_dropdown_menu"
-                app:layout_constraintEnd_toStartOf="@+id/game_sound_mute"
+                app:layout_constraintEnd_toStartOf="@+id/game_soundToggle"
                 app:layout_constraintTop_toTopOf="parent"
                 android:layout_marginEnd="25dp"
                 android:layout_marginStart="25dp"
@@ -50,7 +58,7 @@
 
         </TextView>
         <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/game_sound_mute"
+                android:id="@+id/game_soundToggle"
                 android:onClick="onClick"
                 android:textColor="@color/white"
                 android:drawableStart="@drawable/ic_sound_on"
@@ -372,8 +380,8 @@
         >
 
             <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/b1"
-                    android:text="Jump"
+                    android:id="@+id/game_booster_long"
+                    android:text="Long"
                     android:onClick="onClick"
                     android:textSize="14sp"
                     android:textColor="@color/black"
@@ -386,7 +394,7 @@
             />
 
             <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/b2"
+                    android:id="@+id/game_play_move"
                     android:text="Move"
                     android:onClick="onClick"
                     android:textSize="18sp"
@@ -398,12 +406,12 @@
             />
 
             <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/b3"
+                    android:id="@+id/game_booster_diagonal"
                     android:text="Diagonal"
                     android:onClick="onClick"
                     android:textSize="14sp"
-                    android:textColor="@color/white"
-                    android:background="@mipmap/menu_btn_smedium_magenta"
+                    android:textColor="@color/black"
+                    android:background="@mipmap/menu_btn_smedium_magenta_hollow"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"

@@ -25,8 +25,6 @@ public class BoardView extends View {
     private List<List<Integer>> board;
     private List<List<Bitmap>> sBoard;
     private List<Bitmap> snakeParts = new ArrayList<>();
-    private Matrix matrix = new Matrix();
-
 
     private ObjectAnimator mFadeInOutAnimator;
     private int mSelectedRow;
@@ -128,12 +126,12 @@ public class BoardView extends View {
                 } else {
                     mPaint.setColor(getResources().getColor(R.color.dracula_bg));
                 }
-                canvas.drawRect(i * mRectangleSize, j * mRectangleSize, (i + 1) * mRectangleSize, (j + 1) * mRectangleSize, mPaint);
-                canvas.drawRect(i * mRectangleSize, j * mRectangleSize, (i + 1) * mRectangleSize, (j + 1) * mRectangleSize, whitePaint);
+                canvas.drawRect(j * mRectangleSize, i * mRectangleSize, (j + 1) * mRectangleSize, (i + 1) * mRectangleSize, mPaint);
+                canvas.drawRect(j * mRectangleSize, i * mRectangleSize, (j + 1) * mRectangleSize, (i + 1) * mRectangleSize, whitePaint);
 
                 //SNAKE DRAW
                 if (board.get(i).get(j) > 0) {
-                    canvas.drawBitmap(sBoard.get(i).get(j), i * mRectangleSize, j * mRectangleSize, mPaint);
+                    canvas.drawBitmap(sBoard.get(i).get(j), j * mRectangleSize, i * mRectangleSize, mPaint);
                 }
             }
         }
@@ -144,12 +142,10 @@ public class BoardView extends View {
         float centerY = snakeHead.y * mRectangleSize + mRectangleSize / 2;
         float radius = mRectangleSize / 4;
 
-        int index = 0;
         for (Point p : validMoves) {
             if (snakeHead.x + p.x < mColumns && snakeHead.x + p.x >= 0 && snakeHead.y + p.y < mRows && snakeHead.y + p.y >= 0 && board.get(snakeHead.y + p.y).get(snakeHead.x + p.x) == 0) {
                 canvas.drawCircle(centerX + (mRectangleSize * p.x), centerY + (mRectangleSize * p.y), radius, greenPaint);
             }
-            index++;
         }
     }
 
@@ -169,26 +165,12 @@ public class BoardView extends View {
         } else {
             directions = new int[][] {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
         }
-
-        if (jumpState == 0 && diagonalState == 1) {
-            int rotation;
-            int index = 0;
-            for (int[] direction : directions) {
-                int adjX = snakeHead.x + direction[0];
-                int adjY = snakeHead.y + direction[1];
-                if (adjY >= 0 && adjY < mRows && adjX >= 0 && adjX < mColumns && board.get(adjY).get(adjX) == 0 && (board.get(snakeHead.x).get(adjX) == 0 || board.get(adjY).get(snakeHead.y) == 0)) {
-                    validMoves.add(new Point(direction[1], direction[0]));
-                    index++;
-                }
-            }
-        }
-        else {
-            for (int[] direction : directions) {
-                int adjX = snakeHead.x + direction[0];
-                int adjY = snakeHead.y + direction[1];
-                if (adjY >= 0 && adjY < mRows && adjX >= 0 && adjX < mColumns && board.get(adjY).get(adjX) == 0) {
-                    validMoves.add(new Point(direction[0], direction[1]));
-                }
+        for (int[] direction : directions) {
+            int adjX = snakeHead.x + direction[0];
+            int adjY = snakeHead.y + direction[1];
+            Log.d("DEBUG", "X: " + snakeHead.x + " | Y: " + snakeHead.y);
+            if (adjY >= 0 && adjY < mRows && adjX >= 0 && adjX < mColumns && board.get(adjY).get(adjX) == 0) {
+                validMoves.add(new Point(direction[0], direction[1]));
             }
         }
     }
@@ -220,6 +202,16 @@ public class BoardView extends View {
         Bitmap bitmap = createSprite(snakeRotation, snakeColor, sprite, bodyMirror);
         sBoard.get(snakePos[1]).set(snakePos[0], bitmap);
         board.get(snakePos[1]).set(snakePos[0], 1);
+
+        Log.d("DEBUG", "START");
+        for (int i=0; i<mRows; i++) {
+            String conc = "";
+            for (int j=0; j<mColumns; j++) {
+                conc += board.get(i).get(j) + " ";
+            }
+            Log.d("DEBUG", conc);
+        }
+        Log.d("DEBUG", "END");
     }
 
     public void placeDeadHead(int[] headPos, int snakeRotation, int[] snakeColor, int snakeBuried) {
@@ -248,7 +240,7 @@ public class BoardView extends View {
     public void changeMoveBtnStyle() {
         boolean moveState = false;
         for (Point vm : validMoves) {
-            if (vm.x + snakeHead.x == mSelectedRow && vm.y + snakeHead.y == mSelectedColumn) {
+            if (vm.x + snakeHead.x == mSelectedColumn && vm.y + snakeHead.y == mSelectedRow) {
                 moveState = true;
                 break;
             }
@@ -275,8 +267,8 @@ public class BoardView extends View {
         }
         mLastClickTime = SystemClock.elapsedRealtime();
 
-        mSelectedRow = (int)(event.getX() / mRectangleSize);
-        mSelectedColumn = (int)(event.getY() / mRectangleSize);
+        mSelectedRow = (int)(event.getY() / mRectangleSize);
+        mSelectedColumn = (int)(event.getX() / mRectangleSize);
 
         if (myTurn) changeMoveBtnStyle();
 

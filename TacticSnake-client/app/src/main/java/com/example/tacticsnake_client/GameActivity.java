@@ -2,7 +2,11 @@ package com.example.tacticsnake_client;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Point;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -15,9 +19,11 @@ import android.os.Bundle;
 import androidx.core.content.ContextCompat;
 import com.example.tacticsnake_client.events.EventManager;
 import com.example.tacticsnake_client.events.HotseatEventManager;
+import com.example.tacticsnake_client.managers.CustomAudioManager;
 import com.example.tacticsnake_client.singleton.AppSingleton;
 import com.shared.events.GameInitiatedEvent;
 import com.shared.events.PlayerMoveBroadcastGameEvent;
+import com.shared.events.PlayerMovedGameEvent;
 import com.shared.game.GameSettings;
 import com.shared.player.PlayerInfo;
 
@@ -26,7 +32,15 @@ import java.util.List;
 
 public class GameActivity extends AppCompatActivity {
     private EventManager eventManager;
-    private ScrollView game_eventScroll;
+    private Preferences preferences;
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor preferencesEditor;
+
+    //AUDIO
+    private CustomAudioManager cam;
+    private Button game_soundToggle;
+    private SeekBar game_volume_seekbar;
+
     private LinearLayout game_eventLog;
     private Button diagonalBooster;
     private Button jumpBooster;
@@ -73,9 +87,9 @@ public class GameActivity extends AppCompatActivity {
         boardView = findViewById(R.id.board_view);
         boardView.setBoardSize(eventManager.getPreferences().fieldHeight, eventManager.getPreferences().fieldWidth);
 
-//        diagonalBooster = findViewById(R.id.diagonalbooster);
-//        jumpBooster = findViewById(R.id.jumpbooster);
-//        makeamove = findViewById(R.id.makeamove);
+        jumpBooster = findViewById(R.id.game_booster_long);
+        makeamove = findViewById(R.id.game_play_move);
+        diagonalBooster = findViewById(R.id.game_booster_diagonal);
 
         // Get the screen width
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -90,6 +104,26 @@ public class GameActivity extends AppCompatActivity {
         layoutParams.height = boardSize;
 
         boardView.setLayoutParams(layoutParams);
+
+        //Preferences
+        preferences = new Preferences();
+        sharedPreferences = getSharedPreferences("preferences", MODE_PRIVATE);
+        preferences.initialize(sharedPreferences);
+
+        // AUDIO
+        cam = new CustomAudioManager(this, (AudioManager) getSystemService(AUDIO_SERVICE));
+
+        game_soundToggle = findViewById(R.id.mainMenu_soundToggle);
+        game_volume_seekbar = findViewById(R.id.game_volume_seekbar);
+        game_volume_seekbar.setMax(cam.getMaxVolume());
+
+        //Mute or set volume based on preferences
+        cam.setCurrentVolume(cam.getAm().getStreamVolume(AudioManager.STREAM_MUSIC));
+        if (preferences.volume_muted == 1) {
+            muteSounds();
+        } else {
+            game_volume_seekbar.setProgress(cam.getCurrentVolume());
+        }
 
         //Player bars
         player1_bar = findViewById(R.id.player1_bar);
@@ -162,82 +196,114 @@ public class GameActivity extends AppCompatActivity {
     @SuppressLint("UseCompatLoadingForDrawables")
     public void onClick(View v) {
         int id = v.getId();
-//        if (id == R.id.diagonalbooster) {
-//            diagonalState = Math.abs(diagonalState - 1);
-//            updateBoosterButton(diagonalBooster, diagonalState);
-//        } else if (id == R.id.jumpbooster) {
-//            jumpState = Math.abs(jumpState - 1);
-//            updateBoosterButton(jumpBooster, jumpState);
-//        } else if (id == R.id.makeamove) {
-//            toggleBoard(false);
-//            boardView.setMyTurn(false);
-//
-//            // Create a new thread to send the game event over the network
-//            new Thread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    eventManager.sendEvent(new PlayerMovedGameEvent(new int[] {boardView.getmSelectedColumn(), boardView.getmSelectedRow()}));
-//                }
-//            }).start();
-//
-//            if (diagonalState == 1) diagonalBoosterLeft -= 1;
-//            if (diagonalBoosterLeft == 0) {
-//                disableBoosterButton(diagonalBooster);
-//                diagonalState = 0;
-//            }
-//            if (jumpState == 1) jumpBoosterLeft -= 1;
-//            if (jumpBoosterLeft == 0) {
-//                disableBoosterButton(jumpBooster);
-//                jumpState = 0;
-//            }
-//
-//            boardView.evaluateValidMoves(diagonalState, jumpState);
-//            boardView.changeMoveBtnStyle();
-//        }
+        if (id == R.id.game_booster_diagonal) {
+            diagonalState = Math.abs(diagonalState - 1);
+            updateBoosterButton(diagonalBooster, diagonalState);
+        } else if (id == R.id.game_booster_long) {
+            jumpState = Math.abs(jumpState - 1);
+            updateBoosterButton(jumpBooster, jumpState);
+        } else if (id == R.id.game_play_move) {
+            toggleBoard(false);
+            boardView.setMyTurn(false);
+
+            // Create a new thread to send the game event over the network
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    eventManager.sendEvent(new PlayerMovedGameEvent(new int[] {boardView.getmSelectedColumn(), boardView.getmSelectedRow()})); //TODO WORTH INVESTIGATING
+                }
+            }).start();
+
+            if (diagonalState == 1) diagonalBoosterLeft -= 1;
+            if (diagonalBoosterLeft == 0) {
+                disableBoosterButton(diagonalBooster);
+                diagonalState = 0;
+            }
+            if (jumpState == 1) jumpBoosterLeft -= 1;
+            if (jumpBoosterLeft == 0) {
+                disableBoosterButton(jumpBooster);
+                jumpState = 0;
+            }
+
+            boardView.evaluateValidMoves(diagonalState, jumpState);
+            boardView.changeMoveBtnStyle();
+        }
+        if (SystemClock.elapsedRealtime() - mLastClickTime < 250){
+            return;
+        }
+        mLastClickTime = SystemClock.elapsedRealtime();
+
+        cam.getSp().play(cam.getSounds().get("click"), 1, 1, 0, 0, 1);
+
+        switch (v.getId()) {
+            // AUDIO TOGGLE
+            case R.id.game_soundToggle:
+                preferences.volume_muted ^= 1;
+                if (preferences.volume_muted == 1) {
+                    muteSounds();
+                } else {
+                    unmuteSounds();
+                }
+                updateVolumeMute(preferences.volume_muted);
+                break;
+        }
+    }
+
+    private void updateVolumeMute(int m) {
+        preferencesEditor = sharedPreferences.edit();
+        preferencesEditor.putInt("volume_muted", m);
+        preferencesEditor.apply();
+    }
+
+    public void muteSounds() {
+        game_volume_seekbar.setProgress(0);
+        cam.muteSounds();
+        game_soundToggle.setBackgroundResource(R.mipmap.menu_btn_small_gray);
+        game_soundToggle.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_sound_off_black, 0, 0, 0);
+    }
+
+    public void unmuteSounds() {
+        game_volume_seekbar.setProgress(cam.getSavedVolume());
+        cam.unmuteSounds();
+        game_soundToggle.setBackgroundResource(R.mipmap.menu_btn_small_yellow);
+        game_soundToggle.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_sound_on, 0, 0, 0);
     }
 
     public void displayEventLog(String text) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                TextView textView = new TextView(getApplicationContext());
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                );
-                textView.setLayoutParams(params);
-                textView.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
-                textView.setGravity(Gravity.CENTER);
-                textView.setText(text);
-
-                game_eventLog.addView(textView);
-
-                int maxLines = 10;
-                if (game_eventLog.getChildCount() > maxLines) {
-                    View viewToRemove = game_eventLog.getChildAt(0);
-                    AlphaAnimation anim = new AlphaAnimation(1.0f, 0.0f);
-                    anim.setDuration(500);
-                    anim.setAnimationListener(new Animation.AnimationListener() {
-                        @Override
-                        public void onAnimationStart(Animation animation) {}
-                        @Override
-                        public void onAnimationEnd(Animation animation) {
-                            game_eventLog.removeView(viewToRemove);
-                        }
-                        @Override
-                        public void onAnimationRepeat(Animation animation) {}
-                    });
-                    viewToRemove.startAnimation(anim);
-                }
-
-                game_eventScroll.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        game_eventScroll.fullScroll(ScrollView.FOCUS_DOWN);
-                    }
-                });
-            }
-        });
+//        runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                TextView textView = new TextView(getApplicationContext());
+//                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+//                        LinearLayout.LayoutParams.MATCH_PARENT,
+//                        LinearLayout.LayoutParams.WRAP_CONTENT
+//                );
+//                textView.setLayoutParams(params);
+//                textView.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+//                textView.setGravity(Gravity.CENTER);
+//                textView.setText(text);
+//
+//                game_eventLog.addView(textView);
+//
+//                int maxLines = 10;
+//                if (game_eventLog.getChildCount() > maxLines) {
+//                    View viewToRemove = game_eventLog.getChildAt(0);
+//                    AlphaAnimation anim = new AlphaAnimation(1.0f, 0.0f);
+//                    anim.setDuration(500);
+//                    anim.setAnimationListener(new Animation.AnimationListener() {
+//                        @Override
+//                        public void onAnimationStart(Animation animation) {}
+//                        @Override
+//                        public void onAnimationEnd(Animation animation) {
+//                            game_eventLog.removeView(viewToRemove);
+//                        }
+//                        @Override
+//                        public void onAnimationRepeat(Animation animation) {}
+//                    });
+//                    viewToRemove.startAnimation(anim);
+//                }
+//            }
+//        });
     }
 
     private void updateBoosterButton(Button boosterButton, int state) {
@@ -272,7 +338,7 @@ public class GameActivity extends AppCompatActivity {
         boardView.placeSnake(event.getBodyXY(), event.getRotations()[0], event.getSnakeColor(), event.getSprites()[0], event.getBodyturnMirror());
         boardView.placeSnake(event.getHeadXY(), event.getRotations()[1], event.getSnakeColor(), event.getSprites()[1], 0);
         if (event.getWho() == eventManager.getPlayerNum()) {
-            boardView.setSnakeHead(new Point(event.getHeadXY()[1], event.getHeadXY()[0]));
+            boardView.setSnakeHead(new Point(event.getHeadXY()[0], event.getHeadXY()[1]));
         }
     }
 

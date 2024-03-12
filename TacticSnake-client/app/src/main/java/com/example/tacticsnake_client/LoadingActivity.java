@@ -49,7 +49,7 @@ public class LoadingActivity extends AppCompatActivity {
         //Preferences
 
         //Event manager
-        eventManager = new OnlineEventManager(this, (GameSettings) getIntent().getExtras().getSerializable("preferences"));
+        eventManager = new OnlineEventManager(this, (GameSettings) getIntent().getExtras().getSerializable("gameSettings"));
     }
 
     @Override
