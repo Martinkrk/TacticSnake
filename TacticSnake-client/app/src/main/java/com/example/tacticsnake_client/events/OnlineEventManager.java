@@ -53,12 +53,13 @@ public class OnlineEventManager extends EventManager{
     public void handlePlayerActiveGameEvent(PlayerActiveGameEvent event) {
         if (event.getWho() == getPlayerNum()) {
             gameActivity.displayEventLog("Your Turn!");
+            gameActivity.playSoundPing();
             gameActivity.toggleBoard(true);
-            //TODO sound??
         } else {
             gameActivity.displayEventLog(String.format(Locale.ENGLISH, "%s(%d)'s turn!.", event.getNick(), event.getWho()));
             gameActivity.toggleBoard(false);
         }
+        gameActivity.startMoveTimer(getPreferences().moveTimer, event.getWho());
     }
 
     @Override

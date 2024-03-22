@@ -1,7 +1,5 @@
 <resources>
-    <string name="app_name">Tactic Snake</string>
-
-    <string name="gamename">Tactic Snake</string>
+    <string name="game_name">Tactic Snake</string>
 
     <string name="menu_category1">quick game</string>
     <string name="menu_category2">play</string>

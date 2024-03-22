@@ -9,8 +9,8 @@ import java.io.*;
 import java.net.*;
 
 public class Network {
-    private final String serverAddress = "";
-    private final int serverPort = 0;
+    private final String serverAddress = "6.tcp.eu.ngrok.io";
+    private final int serverPort = 14877;
     private Socket socket;
     private ObjectOutputStream out;
     private ObjectInputStream in;
@@ -73,9 +73,9 @@ public class Network {
                     onlineEventManager.handleObject(object);
                 }
             }
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             onlineEventManager.handleConnectionError();
-        }
+        } catch (IOException e) {}
     }
 
     public void close() {

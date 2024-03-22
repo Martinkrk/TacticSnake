@@ -312,14 +312,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (NullPointerException e) {}
 
         if (!TextUtils.isEmpty(errorTitle) && !TextUtils.isEmpty(errorDesc)) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-            builder.setMessage(errorDesc);
-            builder.setTitle(errorTitle);
-            builder.setNegativeButton("OK", (dialog, which) -> {
-                dialog.cancel();
-            });
-            AlertDialog alertDialog = builder.create();
-            alertDialog.show();
+            alertBox(errorDesc, errorTitle, "OK");
         }
 
         //Use preferences to set values of setting's elements
@@ -605,22 +598,22 @@ public class MainActivity extends AppCompatActivity {
 
     //HELPERS
     public void onWhatIsCorpse(View v) {
-        alertBox("Corpse mode does not remove dead snakes but leaves them as obstacles.");
+        alertBox("Corpse mode does not remove dead snakes but leaves them as obstacles.", "Information", "Close");
     }
 
     public void onWhatIsPortalWalls(View v) {
-        alertBox("Portal Walls mode lets snakes go through walls and appear on the other side.");
+        alertBox("Portal Walls mode lets snakes go through walls and appear on the other side.", "Information", "Close");
     }
 
     public void onWhatIsPrivate(View v) {
-        alertBox("Players can only join your game via game room code provided to you.");
+        alertBox("Players can only join your game via game room code provided to you.", "Information", "Close");
     }
 
-    private void alertBox(String message) {
+    private void alertBox(String message, String title, String button) {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setMessage(message);
-        builder.setTitle("Information");
-        builder.setNegativeButton("CLOSE", (dialog, which) -> {
+        builder.setTitle(title);
+        builder.setNegativeButton(button, (dialog, which) -> {
             dialog.cancel();
         });
         AlertDialog alertDialog = builder.create();

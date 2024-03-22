@@ -13,5 +13,6 @@ public class GameSettings implements Serializable {
     public String gameRoom;
     public String nick;
     public int[] snakeColor;
+    public int moveTimer;
 }
 

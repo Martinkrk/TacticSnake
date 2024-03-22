@@ -58,7 +58,7 @@ public class OnlineGame extends Game {
         setInSession(true);
 
         try {
-            Thread.sleep(3000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {}
             handleNextTurn();
     }

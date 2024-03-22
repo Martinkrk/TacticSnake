@@ -13,6 +13,7 @@ public class Preferences {
     public boolean isPortalWalls;
     public boolean isCorpse;
     public int playersNum;
+    public int moveTimer;
     public boolean isPrivate;
     public String gameRoom;
 
@@ -28,6 +29,7 @@ public class Preferences {
          isPortalWalls = false;
          isCorpse = false;
          playersNum = 4;
+         moveTimer = 20;
          isPrivate = false;
          gameRoom = "";
          nick = "Nameless";
@@ -51,6 +53,7 @@ public class Preferences {
         editor.putBoolean("isPortalWalls", this.isPortalWalls);
         editor.putBoolean("isCorpse", this.isCorpse);
         editor.putInt("playersNum", this.playersNum);
+        editor.putInt("moveTimer", this.moveTimer);
         editor.putString("nick", this.nick);
         editor.putInt("red", this.snakeColor[0]);
         editor.putInt("green", this.snakeColor[1]);
@@ -65,6 +68,7 @@ public class Preferences {
         this.isPortalWalls = sharedPreferences.getBoolean("isPortalWalls", this.isPortalWalls);
         this.isCorpse = sharedPreferences.getBoolean("isCorpse", this.isCorpse);
         this.playersNum = sharedPreferences.getInt("playersNum", this.playersNum);
+        this.moveTimer = sharedPreferences.getInt("moveTimer", this.moveTimer);
         this.nick = sharedPreferences.getString("nick", this.nick);
         this.snakeColor = new int[] {sharedPreferences.getInt("red", 255),
                 sharedPreferences.getInt("green", 255), sharedPreferences.getInt("blue", 255)};
@@ -78,6 +82,7 @@ public class Preferences {
         gs.isPortalWalls = this.isPortalWalls;
         gs.isCorpse = this.isCorpse;
         gs.playersNum = this.playersNum;
+        gs.moveTimer = this.moveTimer;
         gs.isPrivate = this.isPrivate;
         gs.gameRoom = this.gameRoom;
         gs.nick = this.nick;

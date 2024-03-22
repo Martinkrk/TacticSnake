@@ -28,7 +28,13 @@ import com.shared.game.GameSettings;
 import com.shared.player.PlayerInfo;
 
 import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class GameActivity extends AppCompatActivity {
     private EventManager eventManager;
@@ -41,7 +47,8 @@ public class GameActivity extends AppCompatActivity {
     private Button game_soundToggle;
     private SeekBar game_volume_seekbar;
 
-    private LinearLayout game_eventLog;
+    private TextView game_event_text;
+    private TextView game_top_text;
     private Button diagonalBooster;
     private Button jumpBooster;
     private Button makeamove;
@@ -52,9 +59,10 @@ public class GameActivity extends AppCompatActivity {
     private BoardView boardView;
     private long mLastClickTime = 0;
     // Player elements
-    private LinearLayout player1_bar, player2_bar, player3_bar, player4_bar;
-    private ProgressBar avatar1_progressBar, avatar2_progressBar, avatar3_progressBar, avatar4_progressBar;
-
+    public HashMap<Integer, LinearLayout> player_layouts = new HashMap<>();
+    public HashMap<Integer, ProgressBar> player_bars = new HashMap<>();
+    public ScheduledExecutorService executor;
+    public AtomicInteger countdown;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,24 +133,41 @@ public class GameActivity extends AppCompatActivity {
             game_volume_seekbar.setProgress(cam.getCurrentVolume());
         }
 
+        //Displays
+        game_event_text = findViewById(R.id.game_event_text);
+        game_top_text = findViewById(R.id.game_top_text);
+
         //Player bars
-        player1_bar = findViewById(R.id.player1_bar);
-        player2_bar = findViewById(R.id.player2_bar);
-        player3_bar = findViewById(R.id.player3_bar);
-        player4_bar = findViewById(R.id.player4_bar);
+        player_layouts.put(0, (LinearLayout) findViewById(R.id.player1_bar));
+        player_layouts.put(1, (LinearLayout) findViewById(R.id.player2_bar));
+        player_layouts.put(2, (LinearLayout) findViewById(R.id.player3_bar));
+        player_layouts.put(3, (LinearLayout) findViewById(R.id.player4_bar));
+        for (int i=0; i<4; i++) {
+            if (i+1 <= preferences.playersNum) {
+                player_layouts.get(i).setVisibility(View.VISIBLE);
+            } else {
+                player_layouts.get(i).setVisibility(View.INVISIBLE);
+            }
+        }
 
         //Turn Timers
-        avatar1_progressBar = findViewById(R.id.avatar1_progressBar);
-        avatar2_progressBar = findViewById(R.id.avatar2_progressBar);
-        avatar3_progressBar = findViewById(R.id.avatar3_progressBar);
-        avatar4_progressBar = findViewById(R.id.avatar4_progressBar);
-        avatar1_progressBar.setVisibility(View.VISIBLE);
-        avatar2_progressBar.setVisibility(View.INVISIBLE);
-        avatar3_progressBar.setVisibility(View.INVISIBLE);
-        avatar4_progressBar.setVisibility(View.INVISIBLE);
+        player_bars.put(0, (ProgressBar) findViewById(R.id.avatar1_progressBar));
+        player_bars.put(1, (ProgressBar) findViewById(R.id.avatar2_progressBar));
+        player_bars.put(2, (ProgressBar) findViewById(R.id.avatar3_progressBar));
+        player_bars.put(3, (ProgressBar) findViewById(R.id.avatar4_progressBar));
+
+        for (int i=0; i<4; i++) {
+            player_bars.get(i).setVisibility(View.INVISIBLE);
+            player_bars.get(i).setMax(preferences.moveTimer);
+        }
 
         //setup game, board, players
         eventManager.setup();
+    }
+
+    @Override
+    public void onBackPressed() {
+        cancelGame("", "");
     }
 
     public int[] getPlayers() {
@@ -207,12 +232,7 @@ public class GameActivity extends AppCompatActivity {
             boardView.setMyTurn(false);
 
             // Create a new thread to send the game event over the network
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    eventManager.sendEvent(new PlayerMovedGameEvent(new int[] {boardView.getmSelectedColumn(), boardView.getmSelectedRow()})); //TODO WORTH INVESTIGATING
-                }
-            }).start();
+            new Thread(() -> eventManager.sendEvent(new PlayerMovedGameEvent(new int[] {boardView.getmSelectedColumn(), boardView.getmSelectedRow()}))).start();
 
             if (diagonalState == 1) diagonalBoosterLeft -= 1;
             if (diagonalBoosterLeft == 0) {
@@ -269,41 +289,36 @@ public class GameActivity extends AppCompatActivity {
         game_soundToggle.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_sound_on, 0, 0, 0);
     }
 
+    public void playSoundPing() {
+
+    }
+
     public void displayEventLog(String text) {
-//        runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                TextView textView = new TextView(getApplicationContext());
-//                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-//                        LinearLayout.LayoutParams.MATCH_PARENT,
-//                        LinearLayout.LayoutParams.WRAP_CONTENT
-//                );
-//                textView.setLayoutParams(params);
-//                textView.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
-//                textView.setGravity(Gravity.CENTER);
-//                textView.setText(text);
-//
-//                game_eventLog.addView(textView);
-//
-//                int maxLines = 10;
-//                if (game_eventLog.getChildCount() > maxLines) {
-//                    View viewToRemove = game_eventLog.getChildAt(0);
-//                    AlphaAnimation anim = new AlphaAnimation(1.0f, 0.0f);
-//                    anim.setDuration(500);
-//                    anim.setAnimationListener(new Animation.AnimationListener() {
-//                        @Override
-//                        public void onAnimationStart(Animation animation) {}
-//                        @Override
-//                        public void onAnimationEnd(Animation animation) {
-//                            game_eventLog.removeView(viewToRemove);
-//                        }
-//                        @Override
-//                        public void onAnimationRepeat(Animation animation) {}
-//                    });
-//                    viewToRemove.startAnimation(anim);
-//                }
-//            }
-//        });
+        runOnUiThread(() -> game_event_text.setText(text));
+    }
+
+    public void startMoveTimer(int moveTimer, int player) {
+        try {
+            executor.shutdown();
+        } catch (Exception e) {}
+        executor = Executors.newScheduledThreadPool(1);
+        countdown = new AtomicInteger(moveTimer);
+        Log.d("TIMERDEBUG", "I ENTERED STARTMOVETIMER!");
+        Runnable countdownRunnable = () -> {
+            int currentCount = countdown.getAndDecrement();
+            if (currentCount >= 0) {
+                Log.d("DEBUG", "currentCount = " + currentCount);
+                runOnUiThread(() -> {
+                    updateTimerCount(currentCount);
+                    updatePlayerTurnTimer(player, currentCount);
+                });
+            } else {
+                executor.shutdown();
+            }
+        };
+
+        // Schedule the countdown task to execute every second
+        executor.scheduleAtFixedRate(countdownRunnable, 0, 1, TimeUnit.SECONDS);
     }
 
     private void updateBoosterButton(Button boosterButton, int state) {
@@ -347,11 +362,17 @@ public class GameActivity extends AppCompatActivity {
         boardView.removeSnake(moves);
     }
 
-    public void updatePlayerTurnTimer(int player) {
+    public void updatePlayerTurnTimer(int player, int moveTimer) {
+        player_bars.get(player).setProgress(moveTimer);
+        player_bars.get(player).setVisibility(View.VISIBLE);
+    }
 
+    public void updateTimerCount(int moveTimer) {
+        game_top_text.setText(String.valueOf(moveTimer));
     }
 
     public void cancelGame(String errorTitle, String errorDesc) {
+        eventManager.close();
         Intent intent = new Intent(this, MainActivity.class);
         if (!TextUtils.isEmpty(errorTitle)) {
             intent.putExtra("errorTitle", errorTitle);

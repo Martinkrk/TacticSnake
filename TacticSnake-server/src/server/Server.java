@@ -181,10 +181,11 @@ public class Server {
         private final ObjectOutputStream outputStream;
         private final OnlinePlayer player;
         private final OnlineGame game;
-        private Timer responseTimer;
-        private Timer moveTimer;
+        private final Timer responseTimer;
+        private final Timer moveTimer;
         private volatile boolean running;
         private volatile boolean moveTimerCanceled;
+        private volatile boolean timerExpired;
 
         public ClientHandler(Socket socket, ObjectInputStream inputStream, ObjectOutputStream outputStream, OnlinePlayer player) {
             this.socket = socket;
@@ -196,6 +197,7 @@ public class Server {
             this.moveTimer = new Timer();
             this.running = true;
             this.moveTimerCanceled = true;
+            this.timerExpired = false;
         }
 
         @Override
@@ -209,9 +211,10 @@ public class Server {
                             @Override
                             public void run() {
                                 running = false;
+                                timerExpired = true;
                                 game.handleDisconnect(player);
                             }
-                        }, 60000);
+                        }, game.getCurrentSettings().moveTimer * 1000L);
                         moveTimerCanceled = false;
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -223,6 +226,7 @@ public class Server {
                         @Override
                         public void run() {
                             running = false;
+                            timerExpired = true;
                             game.handleDisconnect(player);
                         }
                     }, 11000);
@@ -279,7 +283,7 @@ public class Server {
                     } else {
                         game.sendLog("ERROR", String.format("%s for (%s) %s. Connection reset.", e.getMessage(), player.getSocket().getInetAddress(), player.getNick()));
                     }
-                    game.handleDisconnect(player);
+                    if (!timerExpired) game.handleDisconnect(player);
                     break;
                 } catch (ClassNotFoundException e) {
                     game.sendLog("ERROR", String.format("ClassNotFoundException for (%s) %s. Class was not found", player.getSocket().getInetAddress(), player.getNick()));
