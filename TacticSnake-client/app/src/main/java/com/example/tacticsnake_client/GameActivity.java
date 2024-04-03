@@ -1,22 +1,17 @@
 package com.example.tacticsnake_client;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.*;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import androidx.core.content.ContextCompat;
 import com.example.tacticsnake_client.events.EventManager;
 import com.example.tacticsnake_client.events.HotseatEventManager;
 import com.example.tacticsnake_client.managers.CustomAudioManager;
@@ -28,7 +23,6 @@ import com.shared.game.GameSettings;
 import com.shared.player.PlayerInfo;
 
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -63,6 +57,7 @@ public class GameActivity extends AppCompatActivity {
     public HashMap<Integer, ProgressBar> player_bars = new HashMap<>();
     public ScheduledExecutorService executor;
     public AtomicInteger countdown;
+    private Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -202,31 +197,14 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.game_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menuitemexit) {
-            cancelGame("", "");
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @SuppressLint("UseCompatLoadingForDrawables")
-    public void onClick(View v) {
+    public void onClick(View v) { //TODO test action button style changes
         int id = v.getId();
         if (id == R.id.game_booster_diagonal) {
             diagonalState = Math.abs(diagonalState - 1);
-            updateBoosterButton(diagonalBooster, diagonalState);
+            updateBoosterButton(id, diagonalState);
         } else if (id == R.id.game_booster_long) {
             jumpState = Math.abs(jumpState - 1);
-            updateBoosterButton(jumpBooster, jumpState);
+            updateBoosterButton(id, jumpState);
         } else if (id == R.id.game_play_move) {
             toggleBoard(false);
             boardView.setMyTurn(false);
@@ -266,6 +244,9 @@ public class GameActivity extends AppCompatActivity {
                 }
                 updateVolumeMute(preferences.volume_muted);
                 break;
+            case R.id.game_forfeit:
+                cancelGame("", ""); //TODO test and then add dialog box?
+                break;
         }
     }
 
@@ -303,11 +284,9 @@ public class GameActivity extends AppCompatActivity {
         } catch (Exception e) {}
         executor = Executors.newScheduledThreadPool(1);
         countdown = new AtomicInteger(moveTimer);
-        Log.d("TIMERDEBUG", "I ENTERED STARTMOVETIMER!");
         Runnable countdownRunnable = () -> {
             int currentCount = countdown.getAndDecrement();
             if (currentCount >= 0) {
-                Log.d("DEBUG", "currentCount = " + currentCount);
                 runOnUiThread(() -> {
                     updateTimerCount(currentCount);
                     updatePlayerTurnTimer(player, currentCount);
@@ -321,26 +300,32 @@ public class GameActivity extends AppCompatActivity {
         executor.scheduleAtFixedRate(countdownRunnable, 0, 1, TimeUnit.SECONDS);
     }
 
-    private void updateBoosterButton(Button boosterButton, int state) {
-        if (state == 0) {
-            boosterButton.setTextColor(getResources().getColor(R.color.black));
-        } else {
-            boosterButton.setTextColor(getResources().getColor(R.color.dracula_fg));
+    private void updateBoosterButton(int id , int state) {
+        if (id == R.id.game_booster_long) {
+            if (state == 0) updateBtn(jumpBooster, R.mipmap.menu_btn_smedium_blue_hollow, R.color.black);
+            else updateBtn(jumpBooster, R.mipmap.menu_btn_smedium_blue, R.color.white);
+        } else if (id == R.id.game_booster_diagonal) {
+            if (state == 0) updateBtn(diagonalBooster, R.mipmap.menu_btn_smedium_magenta_hollow, R.color.black);
+            else updateBtn(diagonalBooster, R.mipmap.menu_btn_smedium_magenta, R.color.white);
         }
-        boosterButton.setSelected(!boosterButton.isSelected());
         boardView.evaluateValidMoves(diagonalState, jumpState);
         boardView.changeMoveBtnStyle();
     }
 
     private void disableBoosterButton(Button boosterButton) {
         boosterButton.setEnabled(false);
-        boosterButton.setBackground(getResources().getDrawable(R.drawable.game_booster_button_disabled_bg));
+        updateBtn(diagonalBooster, R.mipmap.menu_btn_white, R.color.black);
     }
 
     public void setMoveBtnState(boolean active) {
         makeamove.setEnabled(active);
-        if (active) makeamove.setBackground(getResources().getDrawable(R.drawable.game_move_btn_bg));
-        if (!active) makeamove.setBackground(getResources().getDrawable(R.drawable.game_booster_button_disabled_bg));
+        if (active) updateBtn(makeamove, R.mipmap.menu_btn_yellow, R.color.white);
+        if (!active) updateBtn(makeamove, R.mipmap.menu_btn_white, R.color.black);
+    }
+
+    public void updateBtn(Button b, int background_image, int text_color) {
+        b.setBackground(getDrawable(background_image));
+        b.setTextColor(getResources().getColor(text_color));
     }
 
     public void toggleBoard(boolean active) {

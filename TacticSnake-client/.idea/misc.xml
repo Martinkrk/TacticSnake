@@ -17,6 +17,7 @@
         <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/drawable/game_move_btn_bg.xml" value="0.1" />
         <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/drawable/hotseat_players_btn_bg.xml" value="0.187" />
         <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/drawable/ic_build.xml" value="0.1" />
+        <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/drawable/ic_forfeit.xml" value="0.182" />
         <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
         <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/drawable/ic_menu.xml" value="0.188" />
         <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/drawable/ic_outline_settings_24.xml" value="0.1" />
@@ -30,6 +31,7 @@
         <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/layout/activity_game.xml" value="0.25" />
         <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/layout/activity_loading.xml" value="0.1" />
         <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/layout/activity_main.xml" value="0.22" />
+        <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/layout/game_menu_header.xml" value="0.1" />
         <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/layout/hotseat_play_menu.xml" value="0.1" />
         <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/layout/main_menu.xml" value="0.1" />
         <entry key="..\:/Users/Admin/IdeaProjects/TacticSnakeProject/TacticSnake-client/app/src/main/res/layout/play_find_game.xml" value="0.1717896174863388" />
