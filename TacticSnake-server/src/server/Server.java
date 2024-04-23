@@ -14,8 +14,6 @@ import java.net.SocketException;
 import java.util.*;
 
 public class Server {
-    //TODO client exit won't close connection with server -Update fixed?
-    //TODO move is always relative to first player -Update no?
     private final int port = 8080;
     private Socket socket;
     private ServerSocket serverSocket;

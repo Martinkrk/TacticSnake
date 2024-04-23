@@ -1,7 +1,10 @@
 package com.example.tacticsnake_client;
 
+import com.shared.events.PlayerMovedGameEvent;
 import com.shared.game.Game;
 import com.shared.player.Snake;
+
+import java.io.IOException;
 
 public class OfflinePlayer extends Snake {
 
@@ -11,7 +14,10 @@ public class OfflinePlayer extends Snake {
     }
 
     @Override
-    public void sendObject(Object object) {
-        //TODO use the fitting event manager to reflect changes in the game
+    public void sendObject(Object object) {}
+
+    @Override
+    public PlayerMovedGameEvent action() {
+        return null;
     }
 }

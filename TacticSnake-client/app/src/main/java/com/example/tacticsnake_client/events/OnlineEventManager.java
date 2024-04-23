@@ -27,6 +27,11 @@ public class OnlineEventManager extends EventManager{
     }
 
     @Override
+    public void handlePlayerMovedGameEvent(PlayerMovedGameEvent event) {
+
+    }
+
+    @Override
     public void handlePlayerDiedGameEvent(PlayerDiedGameEvent event) {
         gameActivity.displayEventLog(String.format(Locale.ENGLISH, "%s(%d)'s snake has died."));
         gameActivity.removeSnake(event.getMoveHistory(), event.getHeadRotation(), event.getSnakeColor(), event.getSnakeBuried());
@@ -40,13 +45,17 @@ public class OnlineEventManager extends EventManager{
     @Override
     public void handlePlayerWonGameEvent(PlayerWonGameEvent event) {
         gameActivity.toggleBoard(false);
-        gameActivity.displayEventLog(String.format(Locale.ENGLISH, "%s(%d) has won!.", event.getNick(), event.getWho()));
+        gameActivity.displayEventLog(String.format(Locale.ENGLISH, "%s(%d) has won!", event.getNick(), event.getWho()));
+        gameActivity.alertBox(String.format(Locale.ENGLISH, "%s has won!", event.getNick()), "Game Over", "To main menu");
     }
 
     @Override
     public void handlePlayerMoveBroadcastGameEvent(PlayerMoveBroadcastGameEvent event) {
         gameActivity.displayEventLog(String.format(Locale.ENGLISH, "%s(%d) made a move!. [%d, %d]", event.getNick(), event.getWho(), event.getHeadXY()[0], event.getHeadXY()[1]));
         gameActivity.updateSnake(event);
+        if (event.getWho() == this.getPlayerNum()) {
+            gameActivity.setSnakePos(event.getHeadXY());
+        }
     }
 
     @Override
@@ -92,7 +101,7 @@ public class OnlineEventManager extends EventManager{
 
     @Override
     public void handleGameInvalidEvent(GameInvalidEvent event) {
-        loadingActivity.cancelGame("Game Search Error", "Couldn't find the requested private game");
+        loadingActivity.cancelGame("No game found", "Couldn't find the requested private game");
     }
 
     @Override

@@ -10,6 +10,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.*;
 import android.widget.*;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import com.example.tacticsnake_client.events.EventManager;
@@ -51,13 +52,13 @@ public class GameActivity extends AppCompatActivity {
     private int diagonalState;
     private int jumpState;
     private BoardView boardView;
+    private int[] players = new int[] {};
     private long mLastClickTime = 0;
     // Player elements
     public HashMap<Integer, LinearLayout> player_layouts = new HashMap<>();
     public HashMap<Integer, ProgressBar> player_bars = new HashMap<>();
     public ScheduledExecutorService executor;
     public AtomicInteger countdown;
-    private Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,21 +158,31 @@ public class GameActivity extends AppCompatActivity {
         }
 
         //setup game, board, players
+        try {
+            players = getIntent().getExtras().getIntArray("players");
+        } catch (Exception e) {
+            Log.d("EXCEPTION", String.valueOf(e));
+        }
         eventManager.setup();
+        cam.getSp().play(cam.getSounds().get("start"), 1, 1, 0, 0, 1);
     }
 
     @Override
     public void onBackPressed() {
-        cancelGame("", "");
+        cancelGameAlertBox("Are you sure you want to leave? You will automatically lose the match.", "Forfeit the game", "Leave", "Cancel");
+    }
+
+    public void updatePlayerTurnProgress(int who) {
+        runOnUiThread(() -> {
+            for (int i = 0; i < 4; i++) {
+                player_bars.get(i).setVisibility(View.INVISIBLE);
+                player_bars.get(i).setMax(preferences.moveTimer);
+            }
+            player_bars.get(who).setVisibility(View.VISIBLE);
+        });
     }
 
     public int[] getPlayers() {
-        int[] players = new int[] {1, 2, 0, 0};
-        try {
-            players = getIntent().getExtras().getIntArray("players");
-        } catch (NullPointerException e) {
-            System.err.println(e);
-        }
         return players;
     }
 
@@ -191,13 +202,11 @@ public class GameActivity extends AppCompatActivity {
             boardView.placeSnake(pi.headPos, pi.headRotation, pi.snakeColor, 0, 0);
             if (pi.playerNum == eventManager.getPlayerNum()) {
                 boardView.setSnakeHead(new Point(pi.headPos[0], pi.headPos[1]));
-                Log.d("DEBUG-pnum", String.valueOf(eventManager.getPlayerNum()));
-                Log.d("DEBUG-shead", Arrays.toString(pi.headPos));
             }
         }
     }
 
-    public void onClick(View v) { //TODO test action button style changes
+    public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.game_booster_diagonal) {
             diagonalState = Math.abs(diagonalState - 1);
@@ -245,7 +254,7 @@ public class GameActivity extends AppCompatActivity {
                 updateVolumeMute(preferences.volume_muted);
                 break;
             case R.id.game_forfeit:
-                cancelGame("", ""); //TODO test and then add dialog box?
+                cancelGameAlertBox("Are you sure you want to leave? You will automatically lose the match.", "Forfeit the game", "Leave", "Cancel");
                 break;
         }
     }
@@ -271,7 +280,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     public void playSoundPing() {
-
+        cam.getSp().play(cam.getSounds().get("ping"), 1, 1, 0, 0, 1);
     }
 
     public void displayEventLog(String text) {
@@ -300,6 +309,10 @@ public class GameActivity extends AppCompatActivity {
         executor.scheduleAtFixedRate(countdownRunnable, 0, 1, TimeUnit.SECONDS);
     }
 
+    public void stopMoveTimer() {
+        executor.shutdown();
+    }
+
     private void updateBoosterButton(int id , int state) {
         if (id == R.id.game_booster_long) {
             if (state == 0) updateBtn(jumpBooster, R.mipmap.menu_btn_smedium_blue_hollow, R.color.black);
@@ -314,7 +327,29 @@ public class GameActivity extends AppCompatActivity {
 
     private void disableBoosterButton(Button boosterButton) {
         boosterButton.setEnabled(false);
-        updateBtn(diagonalBooster, R.mipmap.menu_btn_white, R.color.black);
+        updateBtn(boosterButton, R.mipmap.menu_btn_white, R.color.black);
+    }
+
+    public void updateBoosterButtonsEvent(int diagonal, int jump) {
+        runOnUiThread(() -> {
+            setDiagonalBoosterLeft(diagonal);
+            if (diagonalBoosterLeft > 0) {
+                diagonalBooster.setEnabled(true);
+                diagonalState = 0;
+                updateBoosterButton(R.id.game_booster_diagonal, diagonalState);
+            } else {
+                disableBoosterButton(diagonalBooster);
+            }
+
+            setJumpBoosterLeft(jump);
+            if (jumpBoosterLeft > 0) {
+                jumpBooster.setEnabled(true);
+                jumpState = 0;
+                updateBoosterButton(R.id.game_booster_long, jumpState);
+            } else {
+                disableBoosterButton(jumpBooster);
+            }
+        });
     }
 
     public void setMoveBtnState(boolean active) {
@@ -337,13 +372,14 @@ public class GameActivity extends AppCompatActivity {
     public void updateSnake(PlayerMoveBroadcastGameEvent event) {
         boardView.placeSnake(event.getBodyXY(), event.getRotations()[0], event.getSnakeColor(), event.getSprites()[0], event.getBodyturnMirror());
         boardView.placeSnake(event.getHeadXY(), event.getRotations()[1], event.getSnakeColor(), event.getSprites()[1], 0);
-        if (event.getWho() == eventManager.getPlayerNum()) {
-            boardView.setSnakeHead(new Point(event.getHeadXY()[0], event.getHeadXY()[1]));
-        }
+    }
+
+    public void setSnakePos(int[] pos) {
+        boardView.setSnakeHead(new Point(pos[0], pos[1]));
     }
 
     public void removeSnake(List<int[]> moves, int headRotation, int[] snakeColor, int snakeBuried) {
-        boardView.placeDeadHead(moves.get(0), headRotation, snakeColor, snakeBuried);
+        boardView.placeDeadHead(moves.get(moves.size()-1), headRotation, snakeColor, snakeBuried);
         boardView.removeSnake(moves);
     }
 
@@ -354,6 +390,60 @@ public class GameActivity extends AppCompatActivity {
 
     public void updateTimerCount(int moveTimer) {
         game_top_text.setText(String.valueOf(moveTimer));
+    }
+
+    public void setDiagonalBoosterLeft(int diagonalBoosterLeft) {
+        this.diagonalBoosterLeft = diagonalBoosterLeft;
+    }
+
+    public void setJumpBoosterLeft(int jumpBoosterLeft) {
+        this.jumpBoosterLeft = jumpBoosterLeft;
+    }
+
+    public void setDiagonalState(int diagonalState) {
+        this.diagonalState = diagonalState;
+    }
+
+    public void setJumpState(int jumpState) {
+        this.jumpState = jumpState;
+    }
+
+    public void alertBoxEvent(String message, String title, String button) {
+        runOnUiThread(() -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
+            builder.setMessage(message);
+            builder.setTitle(title);
+            builder.setNegativeButton(button, (dialog, which) -> {
+                cancelGame("", "");
+            });
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+        });
+    }
+
+    public void alertBox(String message, String title, String button) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
+        builder.setMessage(message);
+        builder.setTitle(title);
+        builder.setNegativeButton(button, (dialog, which) -> {
+            dialog.cancel();
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    public void cancelGameAlertBox(String message, String title, String confirmBtn, String cancelBtn) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
+        builder.setMessage(message);
+        builder.setTitle(title);
+        builder.setPositiveButton(confirmBtn, (dialog, which) -> {
+           cancelGame("", "");
+        });
+        builder.setNeutralButton(cancelBtn, (dialog, which) -> {
+            dialog.cancel();
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     public void cancelGame(String errorTitle, String errorDesc) {

@@ -88,6 +88,7 @@ public class LoadingActivity extends AppCompatActivity {
             intent.putExtra("errorTitle", errorTitle);
             intent.putExtra("errorDesc", errorDesc);
         }
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
 }

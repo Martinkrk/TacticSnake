@@ -36,6 +36,8 @@ public class CustomAudioManager {
 
         sounds = new HashMap<>();
         sounds.put("click", sp.load(context, R.raw.click, 0));
+        sounds.put("ping", sp.load(context, R.raw.ping, 0));
+        sounds.put("start", sp.load(context, R.raw.start, 0));
     }
 
     public void muteSounds() {

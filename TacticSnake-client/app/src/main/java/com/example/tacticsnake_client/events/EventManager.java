@@ -39,10 +39,12 @@ public abstract class EventManager implements Serializable {
             handlePlayerDisconnectedGameEvent((PlayerDisconnectedGameEvent) object);
         } else if (object instanceof PlayerDiedGameEvent) {
             handlePlayerDiedGameEvent((PlayerDiedGameEvent) object);
-
+        } else if (object instanceof PlayerMovedGameEvent) {
+            handlePlayerMovedGameEvent((PlayerMovedGameEvent) object);
         }
     }
 
+    abstract void handlePlayerMovedGameEvent(PlayerMovedGameEvent event);
     abstract void handlePlayerDisconnectedGameEvent(PlayerDisconnectedGameEvent event);
     abstract void handlePlayerDiedGameEvent(PlayerDiedGameEvent event);
     abstract void handlePlayerWonGameEvent(PlayerWonGameEvent event);

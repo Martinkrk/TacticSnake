@@ -70,7 +70,6 @@ public class OnlineGame extends Game {
     @Override
     public void addPlayer(Snake player) {
         getPlayers().add(player);
-        //tell all clients a new client has joined and how many are in the game already
         if (!(player instanceof BotLogic)) {
             player.sendObject(new GameEnteredEvent(this.getPlayers().size(), this.getCurrentSettings().playersNum));
         }
@@ -92,7 +91,6 @@ public class OnlineGame extends Game {
         if (alive == 1) {
             handleVictory(alivePlayer);
             closeGameTimer();
-            setGameOver(true);
             return true;
         }
         return false;
@@ -106,7 +104,6 @@ public class OnlineGame extends Game {
     @Override
     public void handleNextTurn() {
         setCurrentTurn((getCurrentTurn()+1) % getCurrentSettings().playersNum);
-        System.out.println("current move is: " + getCurrentTurn());
         for (Snake player : getPlayers()) {
             if (player.getPlayerNum() == getCurrentTurn()) {
                 if (player.isDead()) {
@@ -166,15 +163,23 @@ public class OnlineGame extends Game {
         }
     }
 
+    private void disconnectAll() {
+        for (Snake player : getPlayers()) {
+            if (player instanceof BotLogic) continue;
+            disconnectPlayer((OnlinePlayer) player);
+        }
+    }
+
     private void closeGameTimer() {
         Timer closeGameTimer = new Timer();;
         try {
             closeGameTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
+                    disconnectAll();
                     removeGame();
                 }
-            }, 5000);
+            }, 10000);
 
         } catch (Exception e) {
 
@@ -184,10 +189,17 @@ public class OnlineGame extends Game {
     public void handleDeath(Snake player) {
         System.out.println("Handling death for: " +  player.getNick());
         player.setDead(true);
-        movesRemove(player.getMoveHistory());
         broadcast(new PlayerDiedGameEvent(player.getPlayerNum(), player.getNick(), player.getMoveHistory(), player.getSnakeDirection(), player.getSnakeColor(), player.getSnakeBuried()));
+        movesRemove(player.getMoveHistory());
         if (!hasAnyoneWon()) {
             handleNextTurn();
+        }
+    }
+
+    public void broadcast(Object object) {
+        for (Snake player : getPlayers()) {
+            if (player instanceof BotLogic) continue;
+            if (!player.isDisconnected()) player.sendObject(object);
         }
     }
 

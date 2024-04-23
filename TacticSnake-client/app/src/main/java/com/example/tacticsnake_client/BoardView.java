@@ -12,6 +12,10 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class BoardView extends View {
     private int mColumns = 8;
@@ -130,7 +134,7 @@ public class BoardView extends View {
                 canvas.drawRect(j * mRectangleSize, i * mRectangleSize, (j + 1) * mRectangleSize, (i + 1) * mRectangleSize, whitePaint);
 
                 //SNAKE DRAW
-                if (board.get(i).get(j) > 0) {
+                if (sBoard.get(i).get(j) != null) {
                     canvas.drawBitmap(sBoard.get(i).get(j), j * mRectangleSize, i * mRectangleSize, mPaint);
                 }
             }
@@ -168,7 +172,6 @@ public class BoardView extends View {
         for (int[] direction : directions) {
             int adjX = snakeHead.x + direction[0];
             int adjY = snakeHead.y + direction[1];
-            Log.d("DEBUG", "X: " + snakeHead.x + " | Y: " + snakeHead.y);
             if (adjY >= 0 && adjY < mRows && adjX >= 0 && adjX < mColumns && board.get(adjY).get(adjX) == 0) {
                 validMoves.add(new Point(direction[0], direction[1]));
             }
@@ -202,39 +205,34 @@ public class BoardView extends View {
         Bitmap bitmap = createSprite(snakeRotation, snakeColor, sprite, bodyMirror);
         sBoard.get(snakePos[1]).set(snakePos[0], bitmap);
         board.get(snakePos[1]).set(snakePos[0], 1);
-
-        Log.d("DEBUG", "START");
-        for (int i=0; i<mRows; i++) {
-            String conc = "";
-            for (int j=0; j<mColumns; j++) {
-                conc += board.get(i).get(j) + " ";
-            }
-            Log.d("DEBUG", conc);
-        }
-        Log.d("DEBUG", "END");
     }
 
     public void placeDeadHead(int[] headPos, int snakeRotation, int[] snakeColor, int snakeBuried) {
         int sprite = snakeBuried > 0 ? 6 : 7;
-        Bitmap bitmap = createSprite(snakeRotation, snakeColor, sprite, 0);
-        sBoard.get(headPos[0]).set(headPos[1], bitmap);
+        Bitmap bitmap = createSprite(snakeRotation*90, snakeColor, sprite, 0);
+        sBoard.get(headPos[1]).set(headPos[0], bitmap);
     }
 
     public void removeSnake(List<int[]> moves) {
-        Timer snakeRemoveDelay = new Timer();
         for (int[] move : moves) {
-            try {
-                snakeRemoveDelay.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        sBoard.get(move[0]).set(move[1], null);
-                        board.get(move[0]).set(move[1], 0);
-                    }
-                }, 200);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            board.get(move[1]).set(move[0], 0);
         }
+        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+        AtomicInteger counter = new AtomicInteger(0);
+
+        // Define the task to remove the snake for each move
+        Runnable removeSnakeRunnable = () -> {
+            int[] move = moves.get(counter.getAndIncrement());
+            if (move != null) {
+                sBoard.get(move[1]).set(move[0], null);
+                if (counter.get() >= moves.size()) {
+                    executor.shutdown();
+                }
+            }
+        };
+
+        // Schedule the countdown task to execute every second
+        executor.scheduleAtFixedRate(removeSnakeRunnable, 0, 150, TimeUnit.MILLISECONDS);
     }
 
     public void changeMoveBtnStyle() {

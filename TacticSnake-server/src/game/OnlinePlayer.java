@@ -1,5 +1,6 @@
 package game;
 
+import com.shared.events.PlayerMovedGameEvent;
 import com.shared.game.Game;
 import com.shared.player.Snake;
 
@@ -36,6 +37,7 @@ public class OnlinePlayer extends Snake {
 
     }
 
+    @Override
     public void sendObject(Object object) {
         try {
             out.writeObject(object);
@@ -43,5 +45,10 @@ public class OnlinePlayer extends Snake {
         } catch (IOException e) {
             System.out.println("Couldn't send object to client " + this);
         }
+    }
+
+    @Override
+    public PlayerMovedGameEvent action() {
+        return null;
     }
 }

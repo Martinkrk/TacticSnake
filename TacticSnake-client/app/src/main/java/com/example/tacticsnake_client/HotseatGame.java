@@ -1,17 +1,21 @@
 package com.example.tacticsnake_client;
 
 import android.util.Log;
+import com.example.tacticsnake_client.events.HotseatEventManager;
+import com.shared.events.*;
 import com.shared.game.Game;
 import com.shared.game.GameSettings;
+import com.shared.player.BotLogic;
 import com.shared.player.PlayerInfo;
 import com.shared.player.Snake;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class HotseatGame extends Game {
     private final int[][] snakeColors = new int[][] {{255, 0, 0}, {0, 255, 0}, {0, 0, 255}, {255, 255, 0}};
+    private volatile int[][] playerBoosts = new int[][] {{1, 1}, {1, 1}, {1, 1}, {1, 1}};
+
+    private HotseatEventManager eventManager;
     public HotseatGame(GameSettings currentSettings) {
         super(currentSettings);
     }
@@ -21,20 +25,122 @@ public class HotseatGame extends Game {
         getPlayers().add(player);
     }
 
+    private boolean hasAnyoneWon() {
+        Snake alivePlayer = null;
+        int alive = 0;
+        for (Snake player : getPlayers()) {
+            if (!player.isDead()) {
+                alive++;
+                alivePlayer = player;
+            }
+        }
+        if (alive == 1) {
+            handleVictory(alivePlayer);
+            return true;
+        }
+        return false;
+    }
+
+    private void handleVictory(Snake alivePlayer) {
+        setGameOver(true);
+        eventManager.handlePlayerWonGameEvent(new PlayerWonGameEvent(alivePlayer.getPlayerNum(), alivePlayer.getNick()));
+    }
+
     @Override
     public void handleNextTurn() {
-
+        setCurrentTurn((getCurrentTurn()+1) % (getPlayers().size()));
+        for (Snake player : getPlayers()) {
+            if (player.getPlayerNum() == getCurrentTurn()) {
+                if (player.isDead()) {
+                    break;
+                } else {
+                    if (arePossibleMoves(player)) {
+                        Log.d("BOOSTSTEST", String.format("Player: %s, Long: %d, Diagonal: %d", player.getNick(), player.getJumpBoost(), player.getDiagonalBoost()));
+                        getEventManager().handlePlayerActiveGameEvent(new PlayerActiveGameEvent(player.getPlayerNum(), player.getNick()));
+                        if (player instanceof BotLogic) {
+                            handlePlayerMove(player.action());
+                        }
+                    } else {
+                        for (List<Integer> column : getTiles()) {
+                            String rowstr = "";
+                            for (Integer row : column) {
+                                rowstr += row + " ";
+                            }
+                            Log.d("NOPOSSIBLEMOVESTEST", rowstr);
+                        }
+                        handleDeath(player);
+                        break; //This one
+                    }
+                    return;
+                }
+            }
+        }
+        if (!isGameOver()) {
+            handleNextTurn();
+        }
     }
 
     @Override
     public void startGame() {
+        int playerNum = 0;
+        for (Snake player : getPlayers()) {
+            player.setPlayerNum(playerNum);
+            player.setSnakeDirection(playerNum+1);
+            player.setSnakeHead(getStartingPos()[playerNum]);
+            player.setSnakeBuried(1);
+            player.addMoveToHistory(getStartingPos()[playerNum]);
+            player.setSnakeColor(snakeColors[playerNum]);
+            playerNum++;
+        }
 
+        //TODO revise changes
+        for (int i = 0; i < getPlayers().size(); i++) {
+            getTiles().get(getStartingPos()[i][1]).set(getStartingPos()[i][0], 1);
+        }
+        setCurrentTurn(getPlayers().size()-1);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {}
+        handleNextTurn();
+    }
+
+    public void handlePlayerMove(PlayerMovedGameEvent event) {
+        Snake player = getPlayers().get(getCurrentTurn());
+        Log.d("BOOSTSTEST2", String.format("Player: %s, Long: %d, Diagonal: %d", player.getNick(), player.getJumpBoost(), player.getDiagonalBoost()));
+        if (isLegalMove(event, player)) {
+            PlayerMoveBroadcastGameEvent pmbge = createSpriteDisplayInfo(event, player);
+            player.addMoveHistory(event.getMove());
+            player.removeBoosts();
+            if (player.isUsedDiagonal()) playerBoosts[getCurrentTurn()][0] = 0;
+            if (player.isUsedJump()) playerBoosts[getCurrentTurn()][1] = 0;
+            player.setUsedDiagonal(false);
+            player.setUsedJump(false);
+            eventManager.handlePlayerMoveBroadcastGameEvent(pmbge);
+            handleNextTurn();
+        } else {
+
+        }
+        for (List<Integer> column : getTiles()) {
+            String rowstr = "";
+            for (Integer row : column) {
+                rowstr += row + " ";
+            }
+            Log.d("BOARDTEST", rowstr);
+        }
+        Log.d("EVENTMOVETEST", Arrays.toString(event.getMove()));
+    }
+
+    public void handleDeath(Snake player) {
+        player.setDead(true);
+        movesRemove(player.getMoveHistory());
+        eventManager.handlePlayerDiedGameEvent(new PlayerDiedGameEvent(player.getPlayerNum(), player.getNick(), player.getMoveHistory(), player.getSnakeDirection(), player.getSnakeColor(), player.getSnakeBuried()));
+        hasAnyoneWon();
     }
 
     public List<PlayerInfo> generateHotseatSnakes() {
         List<PlayerInfo> playerInfos = new ArrayList<>();
         for (Snake player : getPlayers()) {
-            Log.d("DEBUG hotseatgame", "player: " + String.valueOf(player.getPlayerNum()));
             if (player != null) {
                 playerInfos.add(new PlayerInfo(player.getPlayerNum(),
                         Arrays.copyOfRange(getStartingPos()[player.getPlayerNum()], 0, 2),
@@ -46,5 +152,17 @@ public class HotseatGame extends Game {
 
     public int[][] getSnakeColors() {
         return snakeColors;
+    }
+
+    public HotseatEventManager getEventManager() {
+        return eventManager;
+    }
+
+    public void setEventManager(HotseatEventManager eventManager) {
+        this.eventManager = eventManager;
+    }
+
+    public int[][] getPlayerBoosts() {
+        return playerBoosts;
     }
 }

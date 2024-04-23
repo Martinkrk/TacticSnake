@@ -59,14 +59,21 @@ public abstract class Game implements Serializable {
 
     private boolean checkLegalInBounds(int x, int y, int[][] moves) {
         for (int[] move : moves) {
-            if (x + move[0] >= 0 && x + move[0] < getCurrentSettings().fieldWidth &&
-                    y + move[1] >= 0 && y + move[1] < getCurrentSettings().fieldHeight) {
-                if (getTiles().get(y + move[1]).get(x + move[0]) == 0) {
-                    return true;
-                }
+            if (isMoveLegal(x, y, move)) {
+                return true;
             }
         }
         return false;
+    }
+
+    private ArrayList<int[]> generateValidMoves(int x, int y, int[][] moves) {
+        ArrayList<int[]> validMoves = new ArrayList<>();
+        for (int[] move : moves) {
+            if (isMoveLegal(x, y, move)) {
+                validMoves.add(new int[] {x + move[0], y + move[1]});
+            }
+        }
+        return validMoves;
     }
 
     private boolean isOutOfBounds(int[] moves) {
@@ -80,6 +87,14 @@ public abstract class Game implements Serializable {
         return false;
     }
 
+    private boolean isMoveLegal(int x, int y, int[] move) {
+        int newX = x + move[0];
+        int newY = y + move[1];
+        return newX >= 0 && newX < getCurrentSettings().fieldWidth &&
+                newY >= 0 && newY < getCurrentSettings().fieldHeight &&
+                getTiles().get(newY).get(newX) == 0;
+    }
+
     public boolean isLegalMove(PlayerMovedGameEvent event, Snake player) {
         int eX = event.getMove()[0];
         int eY = event.getMove()[1];
@@ -90,43 +105,47 @@ public abstract class Game implements Serializable {
             return false;
         }
 
-        //Occupied check
-        if (getTiles().get(eY).get(eX) == 1) {
+        // Occupation check
+        if (getTiles().get(eY).get(eX) == 1) { // 1 = occupied space
             return false;
         }
 
-        //Type of move
+        // Check if the move is a valid snake move
+        // Check for common moves
         for (int[] move : movesCommon) {
             if (move[0] == dX && move[1] == dY) {
                 return true;
             }
         }
 
-        for (int[] move : movesJump) {
-            if (move[0] == dX && move[1] == dY) {
-                if (player.getJumpBoost() > 0) {
+        // Check for jump move
+        if (player.getJumpBoost() > 0) {
+            for (int[] move : movesJump) {
+                if (move[0] == dX && move[1] == dY) {
                     player.setUsedJump(true);
                     return true;
-                } else break;
+                }
             }
         }
 
-        for (int[] move : movesDiagonal) {
-            if (move[0] == dX && move[1] == dY) {
-                if (player.getDiagonalBoost() > 0) {
+        // Check for diagonal move
+        if (player.getDiagonalBoost() > 0) {
+            for (int[] move : movesDiagonal) {
+                if (move[0] == dX && move[1] == dY) {
                     player.setUsedDiagonal(true);
                     return true;
-                } else break;
+                }
             }
         }
 
-        for (int[] move : movesKnight) {
-            if (move[0] == dX && move[1] == dY) {
-                if (player.getDiagonalBoost() > 0 && player.getJumpBoost() > 0) {
+        // Check for knight move
+        if (player.getJumpBoost() > 0 && player.getDiagonalBoost() > 0) {
+            for (int[] move : movesKnight) {
+                if (move[0] == dX && move[1] == dY) {
                     player.setUsedDiagonal(true);
                     player.setUsedJump(true);
                     return true;
-                } else break;
+                }
             }
         }
         return false;
@@ -142,10 +161,6 @@ public abstract class Game implements Serializable {
         int diffX = event.getMove()[0] - bodyCoords[0];
         int diffY = event.getMove()[1] - bodyCoords[1];
 
-        System.err.println("SNAKE HEAD " + Arrays.toString(player.getSnakeHead()));
-        System.err.println("SNAKE MOVE " + Arrays.toString(event.getMove()));
-
-        //Head
         if (player.isUsedJump() && player.isUsedDiagonal()) {
             if (Math.abs(diffX) > Math.abs(diffY)) {
                 if (diffY > 0) {
@@ -161,7 +176,6 @@ public abstract class Game implements Serializable {
                 }
             }
         } else if (player.isUsedDiagonal()) {
-            System.out.println("DIAGONAL USED");
             int newRotation = -1;
             if (diffX == -1 && diffY == -1) {
                 if (bodyRotation == 0) {
@@ -240,10 +254,8 @@ public abstract class Game implements Serializable {
                     bodySprite = 3;
                 } else if (headDirection - bodyRotation == -1 || headDirection - bodyRotation == 3) {
                     bodySprite = 3;
-//                    bodyMirror = 1;
                     bodyRotation+=1;
                 } else {
-                    System.out.println("headD " + headDirection + " bodyR " + bodyRotation);
                 }
             }
         }
@@ -256,13 +268,6 @@ public abstract class Game implements Serializable {
         int[] sprites = new int[] {bodySprite, headSprite};
         int[] rotations = new int[] {bodyRotation*90, headDirection*90};
 
-        for (int op = 0; op < getTiles().size(); op++) {
-            for (int oz = 0; oz < getTiles().get(0).size(); oz++) {
-                System.out.print(getTiles().get(op).get(oz) + " ");
-            }
-            System.out.println();
-        }
-
         PlayerMoveBroadcastGameEvent pmbge = new PlayerMoveBroadcastGameEvent(player.getPlayerNum(), player.getNick(), bodyCoords, event.getMove(), sprites, rotations, bodyMirror, player.getSnakeColor());
         return pmbge;
     }
@@ -273,26 +278,31 @@ public abstract class Game implements Serializable {
         }
     }
 
+    public ArrayList<int[]> getValidMoves(int[] snakeHead, boolean commonMoves, boolean jumpMoves, boolean diagonalMoves, boolean knightMoves) {
+        ArrayList<int[]> moves = new ArrayList<>();
+
+        if (commonMoves) moves.addAll(generateValidMoves(snakeHead[0], snakeHead[1], movesCommon));
+        if (jumpMoves) moves.addAll(generateValidMoves(snakeHead[0], snakeHead[1], movesJump));
+        if (diagonalMoves) moves.addAll(generateValidMoves(snakeHead[0], snakeHead[1], movesDiagonal));
+        if (knightMoves) moves.addAll(generateValidMoves(snakeHead[0], snakeHead[1], movesKnight));
+
+        return moves;
+    }
+
     public void acceptMove(int x, int y) {
         this.tiles.get(y).set(x, 1);
     }
 
     public void fillTiles() {
         for (int i = 0; i < getCurrentSettings().fieldWidth; i++) {
-            List<Integer> innerList = new ArrayList<Integer>();
+            List<Integer> innerList = new ArrayList<>();
             for (int j = 0; j < getCurrentSettings().fieldHeight; j++) {
-                innerList.add(0); // add a default value of 0
+                innerList.add(0);
             }
-            tiles.add(innerList); // add the inner list to the outer ArrayList
+            tiles.add(innerList);
         }
-
-    }
-
-    public void broadcast(Object object) {
-        for (Snake player : getPlayers()) {
-            if (player instanceof BotLogic) continue;
-            if (!player.isDisconnected()) player.sendObject(object);
-            if (object instanceof PlayerDisconnectedGameEvent) System.out.println("PlayerDisconnectedGameEvent was sent");
+        for (int i = 0; i < players.size(); i++) {
+            tiles.get(startingPos[i][1]).set(startingPos[i][0], 1);
         }
     }
 

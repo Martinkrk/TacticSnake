@@ -1,5 +1,6 @@
 package com.shared.player;
 
+import com.shared.events.PlayerMovedGameEvent;
 import com.shared.game.Game;
 
 import java.util.ArrayList;
@@ -37,8 +38,6 @@ public abstract class Snake {
     public void removeBoosts() {
         if (usedDiagonal) diagonalBoost -= 1;
         if (usedJump) jumpBoost -= 1;
-        usedDiagonal = false;
-        usedJump = false;
     }
 
     public Game getAssignedGame() {
@@ -162,4 +161,5 @@ public abstract class Snake {
     }
 
     public abstract void sendObject(Object object);
+    public abstract PlayerMovedGameEvent action();
 }
