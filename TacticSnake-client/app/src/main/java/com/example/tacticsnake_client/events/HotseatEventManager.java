@@ -70,7 +70,8 @@ public class HotseatEventManager extends EventManager {
     }
 
     @Override
-    public void handleGameInitiatedEvent(GameInitiatedEvent event) {}
+    public void handleGameInitiatedEvent(GameInitiatedEvent event) {
+    }
     @Override
     public void handlePlayerNumEvent(PlayerNumEvent event) {}
     @Override
@@ -83,6 +84,8 @@ public class HotseatEventManager extends EventManager {
     public void handleGameInvalidEvent(GameInvalidEvent event) {}
     @Override
     public void handleGameJoiningEvent(GameJoiningEvent event) {}
+    @Override
+    public void handleGameInfoEvent(GameInfoEvent event) {}
 
     @Override
     public void setup() {

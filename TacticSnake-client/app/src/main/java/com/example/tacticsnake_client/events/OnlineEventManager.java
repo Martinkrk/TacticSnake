@@ -33,25 +33,25 @@ public class OnlineEventManager extends EventManager{
 
     @Override
     public void handlePlayerDiedGameEvent(PlayerDiedGameEvent event) {
-        gameActivity.displayEventLog(String.format(Locale.ENGLISH, "%s(%d)'s snake has died."));
+//        gameActivity.displayEventLog(String.format(Locale.ENGLISH, "%s's died.", event.getNick()));
         gameActivity.removeSnake(event.getMoveHistory(), event.getHeadRotation(), event.getSnakeColor(), event.getSnakeBuried());
     }
 
     @Override
     public void handlePlayerDisconnectedGameEvent(PlayerDisconnectedGameEvent event) {
-        gameActivity.displayEventLog(String.format(Locale.ENGLISH, "%s(%d) has disconnected.", event.getNick(), event.getWho()));
+//        gameActivity.displayEventLog(String.format(Locale.ENGLISH, "%s's disconnected.", event.getNick()));
     }
 
     @Override
     public void handlePlayerWonGameEvent(PlayerWonGameEvent event) {
         gameActivity.toggleBoard(false);
-        gameActivity.displayEventLog(String.format(Locale.ENGLISH, "%s(%d) has won!", event.getNick(), event.getWho()));
-        gameActivity.alertBox(String.format(Locale.ENGLISH, "%s has won!", event.getNick()), "Game Over", "To main menu");
+        gameActivity.displayEventLog(String.format(Locale.ENGLISH, "%s's won!", event.getNick()));
+        gameActivity.alertBoxEvent(String.format(Locale.ENGLISH, "%s has won!", event.getNick()), "Game Over", "To main menu");
     }
 
     @Override
     public void handlePlayerMoveBroadcastGameEvent(PlayerMoveBroadcastGameEvent event) {
-        gameActivity.displayEventLog(String.format(Locale.ENGLISH, "%s(%d) made a move!. [%d, %d]", event.getNick(), event.getWho(), event.getHeadXY()[0], event.getHeadXY()[1]));
+//        gameActivity.displayEventLog(String.format(Locale.ENGLISH, "%s's made a move!", event.getNick()));
         gameActivity.updateSnake(event);
         if (event.getWho() == this.getPlayerNum()) {
             gameActivity.setSnakePos(event.getHeadXY());
@@ -64,8 +64,9 @@ public class OnlineEventManager extends EventManager{
             gameActivity.displayEventLog("Your Turn!");
             gameActivity.playSoundPing();
             gameActivity.toggleBoard(true);
+            gameActivity.setMoveBtnState(true);
         } else {
-            gameActivity.displayEventLog(String.format(Locale.ENGLISH, "%s(%d)'s turn!.", event.getNick(), event.getWho()));
+            gameActivity.displayEventLog(String.format(Locale.ENGLISH, "%s's turn!.", event.getNick()));
             gameActivity.toggleBoard(false);
         }
         gameActivity.startMoveTimer(getPreferences().moveTimer, event.getWho());
@@ -110,6 +111,11 @@ public class OnlineEventManager extends EventManager{
     }
 
     @Override
+    public void handleGameInfoEvent(GameInfoEvent event) {
+        loadingActivity.editRoomCodeTextView(event.getGameRoom());
+    }
+
+    @Override
     public void setup() {
 
     }
@@ -127,7 +133,7 @@ public class OnlineEventManager extends EventManager{
 
     @Override
     public void close() {
-        network.close();
+        network.getStopThread().start();
     }
 
     public Network getNetwork() {

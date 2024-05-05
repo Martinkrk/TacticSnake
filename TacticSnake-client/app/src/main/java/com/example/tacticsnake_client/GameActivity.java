@@ -2,6 +2,7 @@ package com.example.tacticsnake_client;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.graphics.Point;
 import android.media.AudioManager;
 import android.os.SystemClock;
@@ -71,6 +72,8 @@ public class GameActivity extends AppCompatActivity {
         }
         catch (NullPointerException e){}
 
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         //EventManager
         try {
             eventManager = (EventManager) getIntent().getExtras().getSerializable("eventManager");
@@ -117,7 +120,7 @@ public class GameActivity extends AppCompatActivity {
         // AUDIO
         cam = new CustomAudioManager(this, (AudioManager) getSystemService(AUDIO_SERVICE));
 
-        game_soundToggle = findViewById(R.id.mainMenu_soundToggle);
+        game_soundToggle = findViewById(R.id.game_soundToggle);
         game_volume_seekbar = findViewById(R.id.game_volume_seekbar);
         game_volume_seekbar.setMax(cam.getMaxVolume());
 
@@ -138,8 +141,8 @@ public class GameActivity extends AppCompatActivity {
         player_layouts.put(1, (LinearLayout) findViewById(R.id.player2_bar));
         player_layouts.put(2, (LinearLayout) findViewById(R.id.player3_bar));
         player_layouts.put(3, (LinearLayout) findViewById(R.id.player4_bar));
-        for (int i=0; i<4; i++) {
-            if (i+1 <= preferences.playersNum) {
+        for (int i = 0; i < 4; i++) {
+            if (i < eventManager.getPreferences().playersNum) {
                 player_layouts.get(i).setVisibility(View.VISIBLE);
             } else {
                 player_layouts.get(i).setVisibility(View.INVISIBLE);
@@ -216,8 +219,8 @@ public class GameActivity extends AppCompatActivity {
             updateBoosterButton(id, jumpState);
         } else if (id == R.id.game_play_move) {
             toggleBoard(false);
+            setMoveBtnState(false);
             boardView.setMyTurn(false);
-
             // Create a new thread to send the game event over the network
             new Thread(() -> eventManager.sendEvent(new PlayerMovedGameEvent(new int[] {boardView.getmSelectedColumn(), boardView.getmSelectedRow()}))).start();
 
@@ -231,9 +234,6 @@ public class GameActivity extends AppCompatActivity {
                 disableBoosterButton(jumpBooster);
                 jumpState = 0;
             }
-
-            boardView.evaluateValidMoves(diagonalState, jumpState);
-            boardView.changeMoveBtnStyle();
         }
         if (SystemClock.elapsedRealtime() - mLastClickTime < 250){
             return;
@@ -353,14 +353,18 @@ public class GameActivity extends AppCompatActivity {
     }
 
     public void setMoveBtnState(boolean active) {
-        makeamove.setEnabled(active);
-        if (active) updateBtn(makeamove, R.mipmap.menu_btn_yellow, R.color.white);
-        if (!active) updateBtn(makeamove, R.mipmap.menu_btn_white, R.color.black);
+        runOnUiThread(() -> {
+            makeamove.setEnabled(active);
+            if (active) updateBtn(makeamove, R.mipmap.menu_btn_yellow, R.color.white);
+            if (!active) updateBtn(makeamove, R.mipmap.menu_btn_white, R.color.black);
+        });
     }
 
     public void updateBtn(Button b, int background_image, int text_color) {
-        b.setBackground(getDrawable(background_image));
-        b.setTextColor(getResources().getColor(text_color));
+        runOnUiThread(() -> {
+            b.setBackground(getDrawable(background_image));
+            b.setTextColor(getResources().getColor(text_color));
+        });
     }
 
     public void toggleBoard(boolean active) {
@@ -422,17 +426,20 @@ public class GameActivity extends AppCompatActivity {
     }
 
     public void alertBox(String message, String title, String button) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
-        builder.setMessage(message);
-        builder.setTitle(title);
-        builder.setNegativeButton(button, (dialog, which) -> {
-            dialog.cancel();
+        runOnUiThread(() -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
+            builder.setMessage(message);
+            builder.setTitle(title);
+            builder.setNegativeButton(button, (dialog, which) -> {
+                dialog.cancel();
+            });
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
         });
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
     }
 
     public void cancelGameAlertBox(String message, String title, String confirmBtn, String cancelBtn) {
+        runOnUiThread(() -> {
         AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
         builder.setMessage(message);
         builder.setTitle(title);
@@ -444,6 +451,7 @@ public class GameActivity extends AppCompatActivity {
         });
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+        });
     }
 
     public void cancelGame(String errorTitle, String errorDesc) {

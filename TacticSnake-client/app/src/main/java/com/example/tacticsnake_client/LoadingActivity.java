@@ -6,6 +6,7 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +20,7 @@ public class LoadingActivity extends AppCompatActivity {
     OnlineEventManager eventManager;
     ConstraintLayout loading_menu;
     TextView textView;
+    TextView loading_roomCode_text;
     private long mLastClickTime = 0;
 
     @SuppressLint("SetTextI18n")
@@ -35,21 +37,21 @@ public class LoadingActivity extends AppCompatActivity {
 
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+        //Preferences
+        GameSettings preferences = (GameSettings) getIntent().getExtras().getSerializable("gameSettings");
+
         //Initial text
         textView = findViewById(R.id.loading_text_view);
         textView.setText("Connecting to server...");
 
+        //Room code text
+        loading_roomCode_text = findViewById(R.id.loading_roomCode_text);
+
         //Animation
         loading_menu = findViewById(R.id.loading_menu);
-//        AnimationDrawable animationDrawable = (AnimationDrawable) loading_menu.getBackground();
-//        animationDrawable.setEnterFadeDuration(2500);
-//        animationDrawable.setExitFadeDuration(5000);
-//        animationDrawable.start();
-
-        //Preferences
 
         //Event manager
-        eventManager = new OnlineEventManager(this, (GameSettings) getIntent().getExtras().getSerializable("gameSettings"));
+        eventManager = new OnlineEventManager(this, preferences);
     }
 
     @Override
@@ -71,6 +73,10 @@ public class LoadingActivity extends AppCompatActivity {
 
     public void editTextView(String text) {
         runOnUiThread(() -> textView.setText(text));
+    }
+
+    public void editRoomCodeTextView(String text) {
+        runOnUiThread(() -> loading_roomCode_text.setText(text));
     }
 
     public void startGame(GameInitiatedEvent gameInitiatedEvent) {

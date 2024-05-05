@@ -99,7 +99,6 @@ public class MainActivity extends AppCompatActivity {
         }
         catch (NullPointerException e){}
 
-
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         //Preferences
@@ -425,6 +424,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.onlineMenu_play_btn:
                 // Preferences class
                 preferences.gameMode = settings_private_switch.isChecked() ? 3 : 1;
+                preferences.isPrivate = settings_private_switch.isChecked();
                 preferences.fieldWidth = settings_boardSize_seekbar.getProgress() + boardSizeOffset;
                 preferences.fieldHeight = settings_boardSize_seekbar.getProgress() + boardSizeOffset;
                 preferences.playersNum = settings_onlinePlayersNumber_seekbar.getProgress() + onlinePlayersNumberOffset;
@@ -496,6 +496,12 @@ public class MainActivity extends AppCompatActivity {
                 //HOTSEAT GAME MENU
             case R.id.mainMenu_hotseat_game_btn:
                 gameSettings = preferences.createGameSettings();
+                gameSettings.fieldHeight = 8;
+                gameSettings.fieldWidth = 8;
+                gameSettings.playersNum = 0;
+                for (int player : hotseatPlayers) {
+                    if (player > 0) gameSettings.playersNum += 1;
+                }
                 intent = new Intent(this, GameActivity.class);
                 intent.putExtra("eventManager", new HotseatEventManager(gameSettings, new HotseatGame(gameSettings)));
                 intent.putExtra("players", hotseatPlayers);

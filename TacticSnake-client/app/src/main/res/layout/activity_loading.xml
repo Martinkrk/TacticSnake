@@ -23,6 +23,20 @@
             android:layout_marginTop="20dp"
             android:contentDescription="@string/title_description"/>
 
+    <TextView
+            android:id="@+id/loading_roomCode_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:text=""
+            android:textSize="48sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/loading_progress_bar"
+            app:layout_constraintTop_toBottomOf="@+id/bg"
+    />
+
     <ProgressBar
             android:id="@+id/loading_progress_bar"
             style="@android:style/Widget.ProgressBar"
@@ -39,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@android:color/white"
-            android:text="A fox under a quartz something ummm..."
+            android:text="..."
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"

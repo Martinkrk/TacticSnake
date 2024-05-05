@@ -55,21 +55,13 @@ public class HotseatGame extends Game {
                     break;
                 } else {
                     if (arePossibleMoves(player)) {
-                        Log.d("BOOSTSTEST", String.format("Player: %s, Long: %d, Diagonal: %d", player.getNick(), player.getJumpBoost(), player.getDiagonalBoost()));
                         getEventManager().handlePlayerActiveGameEvent(new PlayerActiveGameEvent(player.getPlayerNum(), player.getNick()));
                         if (player instanceof BotLogic) {
                             handlePlayerMove(player.action());
                         }
                     } else {
-                        for (List<Integer> column : getTiles()) {
-                            String rowstr = "";
-                            for (Integer row : column) {
-                                rowstr += row + " ";
-                            }
-                            Log.d("NOPOSSIBLEMOVESTEST", rowstr);
-                        }
                         handleDeath(player);
-                        break; //This one
+                        break;
                     }
                     return;
                 }
@@ -93,7 +85,6 @@ public class HotseatGame extends Game {
             playerNum++;
         }
 
-        //TODO revise changes
         for (int i = 0; i < getPlayers().size(); i++) {
             getTiles().get(getStartingPos()[i][1]).set(getStartingPos()[i][0], 1);
         }
@@ -107,7 +98,6 @@ public class HotseatGame extends Game {
 
     public void handlePlayerMove(PlayerMovedGameEvent event) {
         Snake player = getPlayers().get(getCurrentTurn());
-        Log.d("BOOSTSTEST2", String.format("Player: %s, Long: %d, Diagonal: %d", player.getNick(), player.getJumpBoost(), player.getDiagonalBoost()));
         if (isLegalMove(event, player)) {
             PlayerMoveBroadcastGameEvent pmbge = createSpriteDisplayInfo(event, player);
             player.addMoveHistory(event.getMove());
@@ -119,16 +109,8 @@ public class HotseatGame extends Game {
             eventManager.handlePlayerMoveBroadcastGameEvent(pmbge);
             handleNextTurn();
         } else {
-
+            handleDeath(player);
         }
-        for (List<Integer> column : getTiles()) {
-            String rowstr = "";
-            for (Integer row : column) {
-                rowstr += row + " ";
-            }
-            Log.d("BOARDTEST", rowstr);
-        }
-        Log.d("EVENTMOVETEST", Arrays.toString(event.getMove()));
     }
 
     public void handleDeath(Snake player) {

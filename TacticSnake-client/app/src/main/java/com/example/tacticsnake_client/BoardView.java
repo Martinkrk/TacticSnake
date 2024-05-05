@@ -86,7 +86,7 @@ public class BoardView extends View {
         mFadeInOutAnimator.setRepeatCount(ValueAnimator.INFINITE);
 
         //Board size
-        setBoardSize(8, 8);
+        setBoardSize(mRows, mColumns);
         mFadeInOutAnimator.start();
     }
 
@@ -232,7 +232,7 @@ public class BoardView extends View {
         };
 
         // Schedule the countdown task to execute every second
-        executor.scheduleAtFixedRate(removeSnakeRunnable, 0, 150, TimeUnit.MILLISECONDS);
+        executor.scheduleAtFixedRate(removeSnakeRunnable, 0, 100, TimeUnit.MILLISECONDS);
     }
 
     public void changeMoveBtnStyle() {

@@ -13,10 +13,7 @@ import tools.GameRoomCodeGenerator;
 import tools.GameIdGenerator;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 public class OnlineGame extends Game {
     private final Server server;
@@ -52,6 +49,11 @@ public class OnlineGame extends Game {
             player.addMoveToHistory(getStartingPos()[playerNum]);
             playerNum++;
         }
+
+        for (int i = 0; i < getPlayers().size(); i++) {
+            getTiles().get(getStartingPos()[i][1]).set(getStartingPos()[i][0], 1);
+        }
+
         broadcast(getCurrentSettings());
         broadcast(new GameInitiatedEvent(playerInfoList));
         setCurrentTurn(getPlayers().size()-1);
@@ -65,6 +67,26 @@ public class OnlineGame extends Game {
 
     public Server getServer() {
         return server;
+    }
+
+    public boolean handlePlayerMove(PlayerMovedGameEvent event) {
+        OnlinePlayer player = (OnlinePlayer) getPlayers().get(getCurrentTurn());
+        if (isLegalMove(event, player)) {
+            PlayerMoveBroadcastGameEvent pmbge = createSpriteDisplayInfo(event, player);
+            player.addMoveHistory(event.getMove());
+            player.removeBoosts();
+            player.setUsedDiagonal(false);
+            player.setUsedJump(false);
+            broadcast(pmbge);
+            handleNextTurn();
+        } else {
+            System.out.println("Illegal move! Player: " + player.getNick());
+            System.out.println("Player head: " + Arrays.toString(player.getSnakeHead()));
+            System.out.println("Attempted move: " + Arrays.toString(event.getMove()));
+            handleDisconnect(player);
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -107,11 +129,9 @@ public class OnlineGame extends Game {
         for (Snake player : getPlayers()) {
             if (player.getPlayerNum() == getCurrentTurn()) {
                 if (player.isDead()) {
-                    setCurrentTurn((getCurrentTurn() + 1) % getCurrentSettings().playersNum);
                     break;
                 } else if (player.isDisconnected()) {
                     handleDeath(player);
-                    setCurrentTurn((getCurrentTurn() + 1) % getCurrentSettings().playersNum);
                     break;
                 } else {
                     if (arePossibleMoves(player)) {

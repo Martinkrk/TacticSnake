@@ -69,6 +69,7 @@ public class Server {
                 serverGUI.updateGames(games);
                 System.out.println("Game " + getGames().size() + ". Players: " + game.getPlayers().size());
                 sendEvent(output, new GameInfoEvent(game.getGameRoom()));
+                System.out.println("GAME " + game.getGameRoom());
 
                 ClientHandler clientHandler = new ClientHandler(clientSocket, input, output, player);
                 Thread clientThread = new Thread(clientHandler);
@@ -85,6 +86,8 @@ public class Server {
         } catch (ClassNotFoundException e) {
             System.out.println("ClassNotFoundException");
             sendLog("ERROR", "ClassNotFoundException in main server loop");
+        } finally {
+            startServer();
         }
     }
 
@@ -244,19 +247,7 @@ public class Server {
                         System.out.println("Received PlayerMovedGameEvent from " + player.getNick());
                         moveTimer.cancel();
                         PlayerMovedGameEvent event = (PlayerMovedGameEvent) receivedObject;
-                        if (game.isLegalMove(event, player)) {
-                            PlayerMoveBroadcastGameEvent pmbge = game.createSpriteDisplayInfo(event, player);
-                            player.addMoveHistory(event.getMove());
-                            player.removeBoosts();
-                            game.broadcast(pmbge);
-                            game.handleNextTurn();
-                        } else {
-                            System.out.println("Illegal move! Player: " + player.getNick());
-                            System.out.println("Player head: " + Arrays.toString(player.getSnakeHead()));
-                            System.out.println("Attempted move: " + Arrays.toString(event.getMove()));
-                            game.handleDisconnect(player);
-                            break;
-                        }
+                        if (!game.handlePlayerMove(event)) break;
                     } else if (receivedObject instanceof PlayerResponseEvent) {
                         System.out.println("Received PlayerResponseEvent from " + player.getNick());
                         try {

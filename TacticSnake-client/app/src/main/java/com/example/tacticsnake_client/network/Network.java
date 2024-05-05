@@ -9,8 +9,8 @@ import java.io.*;
 import java.net.*;
 
 public class Network {
-    private final String serverAddress = "6.tcp.eu.ngrok.io";
-    private final int serverPort = 14877;
+    private final String serverAddress = "0.tcp.eu.ngrok.io";
+    private final int serverPort = 10913;
     private Socket socket;
     private ObjectOutputStream out;
     private ObjectInputStream in;
@@ -19,6 +19,7 @@ public class Network {
     private Thread connectThread = new Thread(this::connect);
     private Thread receiveThread = new Thread(this::receiveObjects);
     private Thread responseThread = new Thread(this::sendResponse);
+    private Thread stopThread = new Thread(this::close);
     private boolean sendResponse = false;
     private volatile boolean stopThreads = false;
 
@@ -102,6 +103,10 @@ public class Network {
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public Thread getStopThread() {
+        return stopThread;
     }
 
     public void setSendResponse(boolean sendResponse) {
