@@ -38,14 +38,12 @@ public class Server {
 
             while (serverRunning) {
                 Socket clientSocket = serverSocket.accept();
-                System.out.println("New client connected: " + clientSocket);
                 sendLog("INFO", String.format("(%s) has connected to the server", clientSocket.getInetAddress()));
 
                 ObjectInputStream input = new ObjectInputStream(clientSocket.getInputStream());
                 ObjectOutputStream output = new ObjectOutputStream(clientSocket.getOutputStream());
 
                 GameSettings gameSettings = (GameSettings) input.readObject();
-                System.out.println("Received game settings from client: " + gameSettings);
 
                 //Tell client server is trying to find or create a game for client
                 sendEvent(output, new GameJoiningEvent());
@@ -56,20 +54,16 @@ public class Server {
                     //Tell client there is no private game with such game room code
                     sendEvent(output, new GameInvalidEvent());
 
-                    System.out.println("No such private game - null returned");
                     sendLog("INFO", String.format("(%s) requested an invalid game, abort.", clientSocket.getInetAddress()));
                     clientSocket.close();
                     continue;
                 }
-                System.out.printf("Game found or created. Games: %d%n", games.size());
 
                 OnlinePlayer player = new OnlinePlayer(game, gameSettings.nick, output, input, clientSocket);
                 player.setSnakeColor(gameSettings.snakeColor);
                 game.addPlayer(player);
                 serverGUI.updateGames(games);
-                System.out.println("Game " + getGames().size() + ". Players: " + game.getPlayers().size());
                 sendEvent(output, new GameInfoEvent(game.getGameRoom()));
-                System.out.println("GAME " + game.getGameRoom());
 
                 ClientHandler clientHandler = new ClientHandler(clientSocket, input, output, player);
                 Thread clientThread = new Thread(clientHandler);
@@ -81,11 +75,12 @@ public class Server {
                         game.getGameId()));
             }
         } catch (IOException e) {
-            System.out.println("IOException in main server loop");
             sendLog("ERROR", "IOException in main server loop");
         } catch (ClassNotFoundException e) {
-            System.out.println("ClassNotFoundException");
             sendLog("ERROR", "ClassNotFoundException in main server loop");
+        } catch (Exception e) {
+            e.printStackTrace();
+            sendLog("ERROR", "Unexpected error");
         } finally {
             startServer();
         }
@@ -101,7 +96,7 @@ public class Server {
             out.writeObject(event);
             out.flush();
         } catch (IOException e) {
-            System.out.println("Couldn't send event to client " + this);
+            e.printStackTrace();
         }
     }
 
@@ -130,7 +125,6 @@ public class Server {
 
         OnlineGame game = new OnlineGame(gameSettings, this);
         games.add(game);
-        System.out.println("Game created");
         sendLog("INFO", String.format("Game %d has been created.", game.getGameId()));
 
         return game;
@@ -144,17 +138,14 @@ public class Server {
                     g.getCurrentSettings().playersNum != gs.playersNum ||
                     g.getPlayers().size() >= g.getCurrentSettings().playersNum ||
                     g.getCurrentSettings().isPrivate != gs.isPrivate) {
-                System.out.println("settings don't match");
                 return false;
             }
 
-        System.out.println("game found");
         return true;
     }
 
     public void removeGame(OnlineGame game) {
         this.games.remove(game);
-        System.out.printf("Game removed. Games: %d%n", games.size());
         sendLog("INFO", String.format("Game %d has been destroyed.", game.getGameId()));
         serverGUI.updateGames(games);
     }
@@ -182,8 +173,8 @@ public class Server {
         private final ObjectOutputStream outputStream;
         private final OnlinePlayer player;
         private final OnlineGame game;
-        private final Timer responseTimer;
-        private final Timer moveTimer;
+        private Timer responseTimer;
+        private Timer moveTimer;
         private volatile boolean running;
         private volatile boolean moveTimerCanceled;
         private volatile boolean timerExpired;
@@ -194,8 +185,8 @@ public class Server {
             this.outputStream = outputStream;
             this.player = player;
             this.game = (OnlineGame) player.getAssignedGame();
-            this.responseTimer = new Timer();
             this.moveTimer = new Timer();
+            this.responseTimer = new Timer();
             this.running = true;
             this.moveTimerCanceled = true;
             this.timerExpired = false;
@@ -203,12 +194,11 @@ public class Server {
 
         @Override
         public void run() {
-            System.out.println("Thread started successfully for " + player.getNick());
-
             while (running) {
                 if (player.getPlayerNum() == game.getCurrentTurn() && game.isInSession() && moveTimerCanceled) {
                     try {
-                        moveTimer.schedule(new TimerTask() {
+                        this.moveTimer = new Timer();
+                        this.moveTimer.schedule(new TimerTask() {
                             @Override
                             public void run() {
                                 running = false;
@@ -240,34 +230,35 @@ public class Server {
                     java.lang.Object receivedObject = inputStream.readObject();
 
                     if (receivedObject == null) {
-                        System.out.println("No object sent from active player");
+                        game.sendLog("INFO", String.format("Active player %s, sent no object, disconnecting...", player.getNick()));
                         game.handleDisconnect(player);
                         break;
                     } else if (receivedObject instanceof PlayerMovedGameEvent) {
-                        System.out.println("Received PlayerMovedGameEvent from " + player.getNick());
-                        moveTimer.cancel();
+                        if (player.getPlayerNum() == game.getCurrentTurn()) {
+                            this.moveTimer.cancel();
+                            moveTimerCanceled = true;
+                        }
                         PlayerMovedGameEvent event = (PlayerMovedGameEvent) receivedObject;
                         if (!game.handlePlayerMove(event)) break;
                     } else if (receivedObject instanceof PlayerResponseEvent) {
-                        System.out.println("Received PlayerResponseEvent from " + player.getNick());
                         try {
                             responseTimer.cancel();
                         } catch (Exception e) {}
                     } else {
-                        System.out.println("Wrong object from client");
+                        game.sendLog("INFO", String.format("Active player %s, sent wrong object, disconnecting...", player.getNick()));
                         game.handleDisconnect(player);
                         break;
                     }
                 } catch (IOException e) {
-                    moveTimer.cancel();
-                    responseTimer.cancel();
-                    System.err.println("IOException");
+                    try {
+                        this.moveTimer.cancel();
+                        moveTimerCanceled = true;
+                        responseTimer.cancel();
+                    } catch (Exception ex) {e.printStackTrace();}
                     game.sendLog("WARNING", String.format("IOException for (%s) %s.", player.getSocket().getInetAddress(), player.getNick()));
                     if (e instanceof EOFException) {
-                        System.err.println("EOF: Client closed the connection.");
                         game.sendLog("WARNING", String.format("EOFException for (%s) %s. Client closed the connection.", player.getSocket().getInetAddress(), player.getNick()));
                     } else if (e instanceof SocketException) {
-                        System.err.println("SocketException: Connection reset");
                         game.sendLog("WARNING", String.format("SocketException for (%s) %s. Connection reset.", player.getSocket().getInetAddress(), player.getNick()));
                     } else {
                         game.sendLog("ERROR", String.format("%s for (%s) %s. Connection reset.", e.getMessage(), player.getSocket().getInetAddress(), player.getNick()));
@@ -279,7 +270,6 @@ public class Server {
                 }
             }
             running = false;
-            System.out.println("exited while loop");
         }
     }
 }

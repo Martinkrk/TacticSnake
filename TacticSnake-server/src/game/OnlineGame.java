@@ -49,7 +49,6 @@ public class OnlineGame extends Game {
             player.addMoveToHistory(getStartingPos()[playerNum]);
             playerNum++;
         }
-
         for (int i = 0; i < getPlayers().size(); i++) {
             getTiles().get(getStartingPos()[i][1]).set(getStartingPos()[i][0], 1);
         }
@@ -80,9 +79,7 @@ public class OnlineGame extends Game {
             broadcast(pmbge);
             handleNextTurn();
         } else {
-            System.out.println("Illegal move! Player: " + player.getNick());
-            System.out.println("Player head: " + Arrays.toString(player.getSnakeHead()));
-            System.out.println("Attempted move: " + Arrays.toString(event.getMove()));
+            sendLog("ERROR", "Player %s, moved wrong! Disconnecting...");
             handleDisconnect(player);
             return false;
         }
@@ -150,20 +147,17 @@ public class OnlineGame extends Game {
     }
 
     public void handleDisconnect(OnlinePlayer player) {
-        System.out.println("Disconnection process for " + player.getNick());
         disconnectPlayer(player);
         player.setDisconnected(true);
 
         Event disconnectEvent;
         if (isInSession()) {
-            System.out.println("Disconnecting, in session");
             disconnectEvent = new PlayerDisconnectedGameEvent(player.getPlayerNum(), player.getNick());
             broadcast(disconnectEvent);
             if (!hasAnyoneWon() && player.getPlayerNum() == getCurrentTurn()) {
                 handleDeath(player);
             }
         } else {
-            System.out.println("Disconnecting, not in session");
             removePlayer(player);
             disconnectEvent = new GameLeftEvent(getPlayers().size(), getCurrentSettings().playersNum);
             broadcast(disconnectEvent);
@@ -177,9 +171,8 @@ public class OnlineGame extends Game {
             player.getSocket().close();
             player.getOut().close();
             player.getIn().close();
-            System.out.println("socket and streams closed");
         } catch (IOException e) {
-            System.out.println("couldn't close socket or streams");
+            sendLog("ERROR", String.format("Couldn't disconnect player %s", player.getNick()));
         }
     }
 
@@ -207,7 +200,6 @@ public class OnlineGame extends Game {
     }
 
     public void handleDeath(Snake player) {
-        System.out.println("Handling death for: " +  player.getNick());
         player.setDead(true);
         broadcast(new PlayerDiedGameEvent(player.getPlayerNum(), player.getNick(), player.getMoveHistory(), player.getSnakeDirection(), player.getSnakeColor(), player.getSnakeBuried()));
         movesRemove(player.getMoveHistory());

@@ -43,7 +43,7 @@ public class OnlinePlayer extends Snake {
             out.writeObject(object);
             out.flush();
         } catch (IOException e) {
-            System.out.println("Couldn't send object to client " + this);
+            e.printStackTrace();
         }
     }
 
