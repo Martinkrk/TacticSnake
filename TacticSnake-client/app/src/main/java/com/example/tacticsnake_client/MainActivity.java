@@ -12,6 +12,7 @@ import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.SystemClock;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.*;
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private long mLastClickTime = 0;
     private GameSettings gameSettings;
     private Intent intent;
+    private Toast toast;
     private Preferences preferences;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor preferencesEditor;
@@ -223,8 +225,8 @@ public class MainActivity extends AppCompatActivity {
 
         //Switches
         settings_private_switch = findViewById(R.id.settings_private_switch);
-        settings_corpseMode_switch = findViewById(R.id.settings_corpseMode_switch);
-        settings_portalWallsMode_switch = findViewById(R.id.settings_portalWallsMode_switch);
+//        settings_corpseMode_switch = findViewById(R.id.settings_corpseMode_switch);
+//        settings_portalWallsMode_switch = findViewById(R.id.settings_portalWallsMode_switch);
 
         //Preferences
         preferences_playerName_editText = findViewById(R.id.preferences_playerName_editText);
@@ -311,7 +313,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (NullPointerException e) {}
 
         if (!TextUtils.isEmpty(errorTitle) && !TextUtils.isEmpty(errorDesc)) {
-            alertBox(errorDesc, errorTitle, "OK");
+//            alertBox(errorDesc, errorTitle, "OK");
         }
 
         //Use preferences to set values of setting's elements
@@ -327,8 +329,8 @@ public class MainActivity extends AppCompatActivity {
         settings_boardSize_seekbar.setProgress(preferences.fieldHeight-boardSizeOffset);
         settings_onlinePlayersNumber_seekbar.setProgress(1);
         settings_onlinePlayersNumber_seekbar.setProgress(preferences.playersNum - onlinePlayersNumberOffset);
-        settings_corpseMode_switch.setChecked(preferences.isCorpse);
-        settings_portalWallsMode_switch.setChecked(preferences.isPortalWalls);
+//        settings_corpseMode_switch.setChecked(preferences.isCorpse);
+//        settings_portalWallsMode_switch.setChecked(preferences.isPortalWalls);
     }
 
     //NAVIGATION
@@ -358,12 +360,15 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.mainMenu_instructions:
-                Toast toast = Toast.makeText(getApplicationContext(), "It's your turn!", Toast.LENGTH_LONG);
+                toast = Toast.makeText(getApplicationContext(), "Unavailable!", Toast.LENGTH_LONG);
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
                 break;
 
             case R.id.mainMenu_statistics:
+                toast = Toast.makeText(getApplicationContext(), "Unavailable!", Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
                 break;
 
             case R.id.mainMenu_gameSettings:
@@ -428,12 +433,13 @@ public class MainActivity extends AppCompatActivity {
                 preferences.fieldWidth = settings_boardSize_seekbar.getProgress() + boardSizeOffset;
                 preferences.fieldHeight = settings_boardSize_seekbar.getProgress() + boardSizeOffset;
                 preferences.playersNum = settings_onlinePlayersNumber_seekbar.getProgress() + onlinePlayersNumberOffset;
-                preferences.isCorpse = settings_corpseMode_switch.isChecked();
-                preferences.isPortalWalls = settings_portalWallsMode_switch.isChecked();
+//                preferences.isCorpse = settings_corpseMode_switch.isChecked();
+//                preferences.isPortalWalls = settings_portalWallsMode_switch.isChecked();
+
 
                 // Shared Preferences
                 preferencesEditor = sharedPreferences.edit();
-                preferencesEditor.putInt("fieldWith", preferences.fieldWidth);
+                preferencesEditor.putInt("fieldWidth", preferences.fieldWidth);
                 preferencesEditor.putInt("fieldHeight", preferences.fieldHeight);
                 preferencesEditor.putBoolean("isPortalWalls", preferences.isPortalWalls);
                 preferencesEditor.putBoolean("isCorpse", preferences.isCorpse);
@@ -604,15 +610,15 @@ public class MainActivity extends AppCompatActivity {
 
     //HELPERS
     public void onWhatIsCorpse(View v) {
-        alertBox("Corpse mode does not remove dead snakes but leaves them as obstacles.", "Information", "Close");
+        alertBox("Corpse mode does not remove dead snakes but leaves them as obstacles.", "Information on: Corpse mode", "Close");
     }
 
     public void onWhatIsPortalWalls(View v) {
-        alertBox("Portal Walls mode lets snakes go through walls and appear on the other side.", "Information", "Close");
+        alertBox("Portal Walls mode lets snakes go through walls and appear on the other side.", "Information on: Portal Walls mode", "Close");
     }
 
     public void onWhatIsPrivate(View v) {
-        alertBox("Players can only join your game via game room code provided to you.", "Information", "Close");
+        alertBox("When using private mode, players can only join your game via game room code provided to you.", "Information on: Private", "Close");
     }
 
     private void alertBox(String message, String title, String button) {

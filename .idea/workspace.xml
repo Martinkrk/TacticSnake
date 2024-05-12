@@ -1,7 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="75024b99-9096-4327-b73e-9fffe6c8adee" name="Changes" comment="Working timers on client-side. Fix duplicate method calls on server-side." />
+    <list default="true" id="75024b99-9096-4327-b73e-9fffe6c8adee" name="Changes" comment="Fix private games, fix hotseat game issues, fix bot logic, fix online game board and turn issues, separation of concerns">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-client/.idea/deploymentTargetDropDown.xml" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-client/.idea/deploymentTargetDropDown.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-client/app/src/main/java/com/example/tacticsnake_client/BoardView.java" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-client/app/src/main/java/com/example/tacticsnake_client/BoardView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-client/app/src/main/java/com/example/tacticsnake_client/GameActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-client/app/src/main/java/com/example/tacticsnake_client/GameActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-client/app/src/main/java/com/example/tacticsnake_client/HotseatGame.java" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-client/app/src/main/java/com/example/tacticsnake_client/HotseatGame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-client/app/src/main/java/com/example/tacticsnake_client/LoadingActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-client/app/src/main/java/com/example/tacticsnake_client/LoadingActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-client/app/src/main/java/com/example/tacticsnake_client/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-client/app/src/main/java/com/example/tacticsnake_client/MainActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-client/app/src/main/java/com/example/tacticsnake_client/events/HotseatEventManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-client/app/src/main/java/com/example/tacticsnake_client/events/HotseatEventManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-client/app/src/main/java/com/example/tacticsnake_client/events/OnlineEventManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-client/app/src/main/java/com/example/tacticsnake_client/events/OnlineEventManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-client/app/src/main/java/com/example/tacticsnake_client/network/Network.java" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-client/app/src/main/java/com/example/tacticsnake_client/network/Network.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-client/app/src/main/res/layout/activity_game.xml" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-client/app/src/main/res/layout/activity_game.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-client/app/src/main/res/layout/play_online_menu.xml" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-client/app/src/main/res/layout/play_online_menu.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-client/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-client/app/src/main/res/values/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/TacticSnake-server/game/OnlineGame$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/out/production/TacticSnake-server/game/OnlineGame$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/TacticSnake-server/game/OnlineGame.class" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/out/production/TacticSnake-server/game/OnlineGame.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/TacticSnake-server/game/OnlinePlayer.class" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/out/production/TacticSnake-server/game/OnlinePlayer.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/TacticSnake-server/server/Server$ClientHandler$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/out/production/TacticSnake-server/server/Server$ClientHandler$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/TacticSnake-server/server/Server$ClientHandler$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/out/production/TacticSnake-server/server/Server$ClientHandler$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/TacticSnake-server/server/Server$ClientHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/out/production/TacticSnake-server/server/Server$ClientHandler.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/TacticSnake-server/server/Server.class" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/out/production/TacticSnake-server/server/Server.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/out/production/TacticSnake-server/tools/GameIdGenerator.class" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/out/production/TacticSnake-server/tools/GameIdGenerator.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/src/game/OnlineGame.java" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/src/game/OnlineGame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/src/game/OnlinePlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/src/game/OnlinePlayer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TacticSnake-server/src/server/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/TacticSnake-server/src/server/Server.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -18,6 +43,10 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 8
+}</component>
   <component name="ProjectId" id="2Mulg2UPznsamnOzhArEnJldZzn" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
@@ -29,10 +58,21 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/Admin/IdeaProjects/TacticSnakeProject&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;vcs.Subversion&quot;
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;vcs.Subversion&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9f38398b9061-18abd8497189-intellij.indexing.shared.core-IU-241.14494.240" />
+        <option value="bundled-js-predefined-1d06a55b98c1-74d2a5396914-JavaScript-IU-241.14494.240" />
+      </set>
+    </attachedChunks>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration>C:\Users\Admin\AppData\Roaming\Subversion</configuration>
@@ -51,6 +91,9 @@
       <workItem from="1708707426250" duration="487000" />
       <workItem from="1710250135985" duration="387000" />
       <workItem from="1711125276266" duration="232000" />
+      <workItem from="1714899754341" duration="313000" />
+      <workItem from="1715520685389" duration="101000" />
+      <workItem from="1715521920355" duration="92000" />
     </task>
     <task id="LOCAL-00001" summary="First commit">
       <created>1680022749002</created>
@@ -94,7 +137,15 @@
       <option name="project" value="LOCAL" />
       <updated>1711125431966</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Fix private games, fix hotseat game issues, fix bot logic, fix online game board and turn issues, separation of concerns">
+      <option name="closed" value="true" />
+      <created>1714899979756</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1714899979756</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -129,6 +180,7 @@
     <MESSAGE value="Add sound functionality and control, introduce GameSettings class for server communication" />
     <MESSAGE value="Create custom audio manager, fix coordinate order, fix sprite transformations" />
     <MESSAGE value="Working timers on client-side. Fix duplicate method calls on server-side." />
-    <option name="LAST_COMMIT_MESSAGE" value="Working timers on client-side. Fix duplicate method calls on server-side." />
+    <MESSAGE value="Fix private games, fix hotseat game issues, fix bot logic, fix online game board and turn issues, separation of concerns" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix private games, fix hotseat game issues, fix bot logic, fix online game board and turn issues, separation of concerns" />
   </component>
 </project>

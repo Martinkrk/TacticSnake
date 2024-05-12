@@ -110,10 +110,10 @@
             android:layout_width="300dp"
             android:layout_height="30dp"
             android:background="@mipmap/item_pill"
-            app:layout_constraintBottom_toTopOf="@+id/settings_corpseMode"
+            app:layout_constraintBottom_toTopOf="@+id/onlineMenu_play_btn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginBottom="15dp"
+            android:layout_marginBottom="30dp"
     >
 
         <TextView
@@ -147,109 +147,109 @@
 
     </LinearLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/settings_corpseMode"
-            android:layout_width="300dp"
-            android:layout_height="30dp"
-            android:background="@mipmap/item_pill"
-            app:layout_constraintBottom_toTopOf="@+id/settings_portalWallsMode"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginBottom="15dp"
-    >
+<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--            android:id="@+id/settings_corpseMode"-->
+<!--            android:layout_width="300dp"-->
+<!--            android:layout_height="30dp"-->
+<!--            android:background="@mipmap/item_pill"-->
+<!--            app:layout_constraintBottom_toTopOf="@+id/settings_portalWallsMode"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            android:layout_marginBottom="15dp"-->
+<!--    >-->
 
-        <TextView
-                android:id="@+id/settings_corpseMode_text"
-                android:layout_width="wrap_content"
-                android:layout_height="24dp"
-                android:text="@string/corpsetext"
-                android:textColor="@color/black"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="5dp"
-                android:onClick="onWhatIsCorpse" tools:ignore="UsingOnClickInXml"
-        />
+<!--        <TextView-->
+<!--                android:id="@+id/settings_corpseMode_text"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="24dp"-->
+<!--                android:text="@string/corpsetext"-->
+<!--                android:textColor="@color/black"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="parent"-->
+<!--                android:layout_marginStart="10dp"-->
+<!--                android:layout_marginTop="5dp"-->
+<!--                android:onClick="onWhatIsCorpse" tools:ignore="UsingOnClickInXml"-->
+<!--        />-->
 
-        <ImageButton
-                android:id="@+id/settings_corpseMode_helper"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:background="#00000000"
-                android:onClick="onWhatIsCorpse"
-                android:scaleType="fitXY"
-                app:srcCompat="@drawable/info" tools:ignore="UsingOnClickInXml"
-                app:layout_constraintStart_toEndOf="@+id/settings_corpseMode_text"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginTop="2dp"
-        />
+<!--        <ImageButton-->
+<!--                android:id="@+id/settings_corpseMode_helper"-->
+<!--                android:layout_width="15dp"-->
+<!--                android:layout_height="15dp"-->
+<!--                android:background="#00000000"-->
+<!--                android:onClick="onWhatIsCorpse"-->
+<!--                android:scaleType="fitXY"-->
+<!--                app:srcCompat="@drawable/info" tools:ignore="UsingOnClickInXml"-->
+<!--                app:layout_constraintStart_toEndOf="@+id/settings_corpseMode_text"-->
+<!--                app:layout_constraintTop_toTopOf="parent"-->
+<!--                android:layout_marginTop="2dp"-->
+<!--        />-->
 
-        <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/settings_corpseMode_switch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:thumb="@drawable/custom_switch_thumb"
-                app:track="@drawable/custom_switch_track"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginEnd="24dp"
-        />
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/settings_portalWallsMode"
-            android:layout_width="300dp"
-            android:layout_height="30dp"
-            android:background="@mipmap/item_pill"
-            app:layout_constraintBottom_toTopOf="@+id/onlineMenu_play_btn"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginBottom="30dp"
-    >
-
-        <TextView
-                android:id="@+id/settings_portalWallsMode_text"
-                android:layout_width="wrap_content"
-                android:layout_height="24dp"
-                android:text="@string/portaltext"
-                android:textColor="@color/black"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="5dp"
-                android:onClick="onWhatIsPortalWalls" tools:ignore="UsingOnClickInXml"
-        />
-
-        <ImageButton
-                android:id="@+id/settings_portalWallsMode_helper"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:background="#00000000"
-                android:onClick="onWhatIsPortalWalls"
-                android:scaleType="fitXY"
-                app:srcCompat="@drawable/info" tools:ignore="UsingOnClickInXml"
-                app:layout_constraintStart_toEndOf="@+id/settings_portalWallsMode_text"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginTop="2dp"
-        />
-
-        <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/settings_portalWallsMode_switch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:thumb="@drawable/custom_switch_thumb"
-                app:track="@drawable/custom_switch_track"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginEnd="24dp"
-        />
+<!--        <androidx.appcompat.widget.SwitchCompat-->
+<!--                android:id="@+id/settings_corpseMode_switch"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text=""-->
+<!--                android:thumb="@drawable/custom_switch_thumb"-->
+<!--                app:track="@drawable/custom_switch_track"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="parent"-->
+<!--                android:layout_marginEnd="24dp"-->
+<!--        />-->
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--            android:id="@+id/settings_portalWallsMode"-->
+<!--            android:layout_width="300dp"-->
+<!--            android:layout_height="30dp"-->
+<!--            android:background="@mipmap/item_pill"-->
+<!--            app:layout_constraintBottom_toTopOf="@+id/onlineMenu_play_btn"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            android:layout_marginBottom="30dp"-->
+<!--    >-->
+
+<!--        <TextView-->
+<!--                android:id="@+id/settings_portalWallsMode_text"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="24dp"-->
+<!--                android:text="@string/portaltext"-->
+<!--                android:textColor="@color/black"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="parent"-->
+<!--                android:layout_marginStart="10dp"-->
+<!--                android:layout_marginTop="5dp"-->
+<!--                android:onClick="onWhatIsPortalWalls" tools:ignore="UsingOnClickInXml"-->
+<!--        />-->
+
+<!--        <ImageButton-->
+<!--                android:id="@+id/settings_portalWallsMode_helper"-->
+<!--                android:layout_width="15dp"-->
+<!--                android:layout_height="15dp"-->
+<!--                android:background="#00000000"-->
+<!--                android:onClick="onWhatIsPortalWalls"-->
+<!--                android:scaleType="fitXY"-->
+<!--                app:srcCompat="@drawable/info" tools:ignore="UsingOnClickInXml"-->
+<!--                app:layout_constraintStart_toEndOf="@+id/settings_portalWallsMode_text"-->
+<!--                app:layout_constraintTop_toTopOf="parent"-->
+<!--                android:layout_marginTop="2dp"-->
+<!--        />-->
+
+<!--        <androidx.appcompat.widget.SwitchCompat-->
+<!--                android:id="@+id/settings_portalWallsMode_switch"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text=""-->
+<!--                android:thumb="@drawable/custom_switch_thumb"-->
+<!--                app:track="@drawable/custom_switch_track"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="parent"-->
+<!--                android:layout_marginEnd="24dp"-->
+<!--        />-->
+
+
+<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
 
     <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/onlineMenu_play_btn"

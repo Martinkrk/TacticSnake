@@ -23,8 +23,6 @@ import com.shared.events.PlayerMoveBroadcastGameEvent;
 import com.shared.events.PlayerMovedGameEvent;
 import com.shared.game.GameSettings;
 import com.shared.player.PlayerInfo;
-
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -425,19 +423,6 @@ public class GameActivity extends AppCompatActivity {
         });
     }
 
-    public void alertBox(String message, String title, String button) {
-        runOnUiThread(() -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
-            builder.setMessage(message);
-            builder.setTitle(title);
-            builder.setNegativeButton(button, (dialog, which) -> {
-                dialog.cancel();
-            });
-            AlertDialog alertDialog = builder.create();
-            alertDialog.show();
-        });
-    }
-
     public void cancelGameAlertBox(String message, String title, String confirmBtn, String cancelBtn) {
         runOnUiThread(() -> {
         AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
@@ -455,6 +440,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     public void cancelGame(String errorTitle, String errorDesc) {
+        executor.shutdown();
         eventManager.close();
         Intent intent = new Intent(this, MainActivity.class);
         if (!TextUtils.isEmpty(errorTitle)) {

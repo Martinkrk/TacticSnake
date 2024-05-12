@@ -9,17 +9,17 @@ import java.io.*;
 import java.net.*;
 
 public class Network {
-    private final String serverAddress = "0.tcp.eu.ngrok.io";
-    private final int serverPort = 10913;
+    private final String serverAddress = "";
+    private final int serverPort = 8080;
     private Socket socket;
     private ObjectOutputStream out;
     private ObjectInputStream in;
     private OnlineEventManager onlineEventManager;
     private PlayerResponseEvent playerResponseEvent;
-    private Thread connectThread = new Thread(this::connect);
-    private Thread receiveThread = new Thread(this::receiveObjects);
-    private Thread responseThread = new Thread(this::sendResponse);
-    private Thread stopThread = new Thread(this::close);
+    private final Thread connectThread = new Thread(this::connect);
+    private final Thread receiveThread = new Thread(this::receiveObjects);
+    private final Thread responseThread = new Thread(this::sendResponse);
+    private final Thread stopThread = new Thread(this::close);
     private boolean sendResponse = false;
     private volatile boolean stopThreads = false;
 
@@ -42,7 +42,6 @@ public class Network {
             }
         }
         if (!stopThreads) {
-            Log.d("DEBUG", "LEFT SERVER CONNECTION WHILE LOOP");
             sendPreferences(onlineEventManager.getPreferences());
             receiveThread.start();
             playerResponseEvent = new PlayerResponseEvent();
@@ -74,22 +73,28 @@ public class Network {
                     onlineEventManager.handleObject(object);
                 }
             }
-        } catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException | IOException e) {
             onlineEventManager.handleConnectionError();
-        } catch (IOException e) {}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void close() {
-        stopThreads = true;
-        connectThread.interrupt();
-        receiveThread.interrupt();
-        responseThread.interrupt();
         try {
+            stopThreads = true;
+            connectThread.interrupt();
+            receiveThread.interrupt();
+            responseThread.interrupt();
             if (socket != null) socket.close();
             if (out != null) out.close();
             if (in != null) in.close();
 
-        } catch (IOException e) {}
+        } catch (IOException e) {
+            onlineEventManager.handleConnectionError();
+        } catch (Exception e) {
+            Log.d("EXCEPTION", String.valueOf(e));
+        }
     }
 
     private void sendResponse() {
@@ -98,10 +103,12 @@ public class Network {
                 if (sendResponse) {
                     out.writeObject(playerResponseEvent);
                 }
-                Thread.sleep(10000);
+                Thread.sleep(5000);
             }
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            onlineEventManager.handleConnectionError();
+        } catch (Exception e) {
+            Log.d("EXCEPTION", String.valueOf(e));
         }
     }
 

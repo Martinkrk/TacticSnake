@@ -33,25 +33,26 @@ public class OnlineEventManager extends EventManager{
 
     @Override
     public void handlePlayerDiedGameEvent(PlayerDiedGameEvent event) {
-//        gameActivity.displayEventLog(String.format(Locale.ENGLISH, "%s's died.", event.getNick()));
         gameActivity.removeSnake(event.getMoveHistory(), event.getHeadRotation(), event.getSnakeColor(), event.getSnakeBuried());
     }
 
     @Override
     public void handlePlayerDisconnectedGameEvent(PlayerDisconnectedGameEvent event) {
-//        gameActivity.displayEventLog(String.format(Locale.ENGLISH, "%s's disconnected.", event.getNick()));
     }
 
     @Override
     public void handlePlayerWonGameEvent(PlayerWonGameEvent event) {
         gameActivity.toggleBoard(false);
         gameActivity.displayEventLog(String.format(Locale.ENGLISH, "%s's won!", event.getNick()));
-        gameActivity.alertBoxEvent(String.format(Locale.ENGLISH, "%s has won!", event.getNick()), "Game Over", "To main menu");
+        if (event.getWho() == getPlayerNum()) {
+            gameActivity.alertBoxEvent(String.format(Locale.ENGLISH, "You've won!"), "Game Over", "To main menu");
+        } else {
+            gameActivity.alertBoxEvent(String.format(Locale.ENGLISH, "%s has won!", event.getNick()), "Game Over", "To main menu");
+        }
     }
 
     @Override
     public void handlePlayerMoveBroadcastGameEvent(PlayerMoveBroadcastGameEvent event) {
-//        gameActivity.displayEventLog(String.format(Locale.ENGLISH, "%s's made a move!", event.getNick()));
         gameActivity.updateSnake(event);
         if (event.getWho() == this.getPlayerNum()) {
             gameActivity.setSnakePos(event.getHeadXY());
@@ -69,6 +70,7 @@ public class OnlineEventManager extends EventManager{
             gameActivity.displayEventLog(String.format(Locale.ENGLISH, "%s's turn!.", event.getNick()));
             gameActivity.toggleBoard(false);
         }
+        gameActivity.updatePlayerTurnProgress(event.getWho());
         gameActivity.startMoveTimer(getPreferences().moveTimer, event.getWho());
     }
 
@@ -133,7 +135,9 @@ public class OnlineEventManager extends EventManager{
 
     @Override
     public void close() {
-        network.getStopThread().start();
+        if (network.getStopThread().getState() == Thread.State.NEW) {
+            network.getStopThread().start();
+        }
     }
 
     public Network getNetwork() {

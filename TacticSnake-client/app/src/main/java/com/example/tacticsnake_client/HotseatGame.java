@@ -1,6 +1,5 @@
 package com.example.tacticsnake_client;
 
-import android.util.Log;
 import com.example.tacticsnake_client.events.HotseatEventManager;
 import com.shared.events.*;
 import com.shared.game.Game;
