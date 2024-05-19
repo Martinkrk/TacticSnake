@@ -313,7 +313,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (NullPointerException e) {}
 
         if (!TextUtils.isEmpty(errorTitle) && !TextUtils.isEmpty(errorDesc)) {
-//            alertBox(errorDesc, errorTitle, "OK");
+            alertBox(errorDesc, errorTitle, "OK");
         }
 
         //Use preferences to set values of setting's elements
@@ -360,13 +360,13 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.mainMenu_instructions:
-                toast = Toast.makeText(getApplicationContext(), "Unavailable!", Toast.LENGTH_LONG);
+                toast = Toast.makeText(getApplicationContext(), "The feature is unavailable!", Toast.LENGTH_LONG);
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
                 break;
 
             case R.id.mainMenu_statistics:
-                toast = Toast.makeText(getApplicationContext(), "Unavailable!", Toast.LENGTH_LONG);
+                toast = Toast.makeText(getApplicationContext(), "The feature is unavailable!", Toast.LENGTH_LONG);
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
                 break;

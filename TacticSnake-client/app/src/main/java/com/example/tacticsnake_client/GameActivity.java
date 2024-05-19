@@ -94,6 +94,7 @@ public class GameActivity extends AppCompatActivity {
 
         jumpBooster = findViewById(R.id.game_booster_long);
         makeamove = findViewById(R.id.game_play_move);
+        setMoveBtnState(false);
         diagonalBooster = findViewById(R.id.game_booster_diagonal);
 
         // Get the screen width

@@ -65,7 +65,6 @@ public class OnlineEventManager extends EventManager{
             gameActivity.displayEventLog("Your Turn!");
             gameActivity.playSoundPing();
             gameActivity.toggleBoard(true);
-            gameActivity.setMoveBtnState(true);
         } else {
             gameActivity.displayEventLog(String.format(Locale.ENGLISH, "%s's turn!.", event.getNick()));
             gameActivity.toggleBoard(false);
@@ -125,9 +124,11 @@ public class OnlineEventManager extends EventManager{
     public void handleConnectionError() {
         close();
         if (getGameActivity() != null) {
-            getGameActivity().cancelGame("Connection Error", "Disconnected.");
+//            getGameActivity().cancelGame("Connection Error", "Disconnected.");
+            getGameActivity().cancelGame("", "");
         } else if (getLoadingActivity() != null) {
-            getLoadingActivity().cancelGame("Connection Error", "Disconnected.");
+//            getLoadingActivity().cancelGame("Connection Error", "Disconnected.");
+            getLoadingActivity().cancelGame("", "");
         } else {
             throw new NullPointerException("LoadingActivity can not be null!");
         }
