@@ -9,8 +9,8 @@ import java.io.*;
 import java.net.*;
 
 public class Network {
-    private final String serverAddress = "";
-    private final int serverPort = 8080;
+    private final String serverAddress = "tacticsnake.servegame.com";
+    private final int serverPort = 9090;
     private Socket socket;
     private ObjectOutputStream out;
     private ObjectInputStream in;

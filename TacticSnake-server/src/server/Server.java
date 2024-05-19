@@ -14,7 +14,7 @@ import java.net.SocketException;
 import java.util.*;
 
 public class Server {
-    private final int port = 8080;
+    private final int port = 9090;
     private Socket socket;
     private ServerSocket serverSocket;
     private List<OnlineGame> games;
